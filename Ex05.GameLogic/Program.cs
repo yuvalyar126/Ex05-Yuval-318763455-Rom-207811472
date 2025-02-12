@@ -1,4 +1,4 @@
-﻿namespace Ex02
+﻿namespace Ex05.GameLogic
 {
     public class Program
     {

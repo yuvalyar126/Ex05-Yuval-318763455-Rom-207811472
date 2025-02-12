@@ -1,28 +1,27 @@
-﻿namespace Ex02
+﻿namespace Ex05.GameLogic
 {
-    internal class Move
+    public class Move
     {
         private Point m_From;
         private Point m_To;
         private Point m_EatenPieceLocation;
         private bool m_IsEatingMove = false;
 
-        internal Move(){} // Empty ctor
+        public Move(){} // Empty ctor
 
-        internal Move(Point i_From, Point i_To)
+        public Move(Point i_From, Point i_To)
         {
             m_From = i_From;
             m_To = i_To;
         }
 
-        internal Move(string i_MoveString)
-        { 
-
+        public Move(string i_MoveString)
+        {
             m_From = new Point(i_MoveString[0] - 'A', i_MoveString[1] - 'a');
             m_To = new Point(i_MoveString[3] - 'A', i_MoveString[4] - 'a');
         }
 
-        internal Move(Point i_From, Point i_To, Point i_EatenPieceLocation)
+        public Move(Point i_From, Point i_To, Point i_EatenPieceLocation)
         {
             m_From = i_From;
             m_To = i_To;
@@ -30,7 +29,7 @@
             m_IsEatingMove = true;
         }
 
-        internal Point From
+        public Point From
         {
             get
             {
@@ -42,7 +41,7 @@
             }
         }
 
-        internal Point To
+        public Point To
         {
             get
             {
@@ -54,7 +53,7 @@
             }
         }
 
-        internal bool IsEatingMove
+        public bool IsEatingMove
         {
             get
             {
@@ -62,7 +61,7 @@
             }
         }
 
-        internal Point EatenPieceLocation
+        public Point EatenPieceLocation
         {
             get
             {

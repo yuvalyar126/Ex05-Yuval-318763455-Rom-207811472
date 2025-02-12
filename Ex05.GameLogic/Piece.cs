@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Ex02
+namespace Ex05.GameLogic
 {
-    internal enum ePieceType
+    public enum ePieceType
     {
         X,
         O,
@@ -10,25 +10,25 @@ namespace Ex02
         K,
     }
 
-    internal enum eValue
+    public enum eValue
     {
         Regular = 1,
         King = 4,
     }
 
-    internal class Piece
+    public class Piece
     {
         private ePieceType m_Type;
         private bool m_IsKing = false;
         private Point m_Position;
 
-        internal Piece(ePieceType type, int row, int column)
+        public Piece(ePieceType type, int row, int column)
         {
             m_Type = type;
             m_Position = new Point(row, column);
         }
 
-        internal ePieceType Type
+        public ePieceType Type
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Ex02
             }
         }
 
-        internal bool IsKing
+        public bool IsKing
         {
             get
             {
@@ -52,7 +52,7 @@ namespace Ex02
             }
         }
 
-        internal Point Position
+        public Point Position
         {
             get
             {
@@ -64,13 +64,13 @@ namespace Ex02
             }
         }
 
-        internal void PromoteToKing()
+        public void PromoteToKing()
         {
             m_IsKing = true;
             m_Type = m_Type == ePieceType.X ? ePieceType.K : ePieceType.U;
         }
 
-        internal bool IsOpponentPiece(ePieceType i_CurrentPieceType)
+        public bool IsOpponentPiece(ePieceType i_CurrentPieceType)
         {
             bool isOpponentPiece = false;
 
@@ -100,7 +100,7 @@ namespace Ex02
             return i_GameBoard.IsCellInBoard(nextMoveRow, nextMoveCol) && i_GameBoard.IsCellEmpty(nextMoveRow, nextMoveCol);
         }
 
-        internal void AddMovesToLists(GameBoard i_GameBoard, List<Move> i_RegularMovesList, List<Move> i_EatingMovesList)
+        public void AddMovesToLists(GameBoard i_GameBoard, List<Move> i_RegularMovesList, List<Move> i_EatingMovesList)
         {
             addRegularMovesToList(i_GameBoard, i_RegularMovesList);
             AddEatingMovesToList(i_GameBoard, i_EatingMovesList);
@@ -118,7 +118,7 @@ namespace Ex02
             }
         }
 
-        internal void AddEatingMovesToList(GameBoard i_GameBoard, List<Move> i_EatingMovesList)
+        public void AddEatingMovesToList(GameBoard i_GameBoard, List<Move> i_EatingMovesList)
         {
             int moveDirection = getDirection();
 

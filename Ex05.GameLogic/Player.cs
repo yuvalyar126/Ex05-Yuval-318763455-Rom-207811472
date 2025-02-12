@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Ex02
+namespace Ex05.GameLogic
 {
-    internal enum ePlayerType
+    public enum ePlayerType
     {
         FirstPlayer,
         SecondPlayer,
     }
 
-    internal class Player
+    public class Player
     {
         private readonly string r_PlayerName;
         private readonly ePieceType r_PlayerPieceSymbol;
@@ -18,14 +18,14 @@ namespace Ex02
         private List<Piece> m_PlayerPieces;
         
 
-        internal Player(string i_PlayerName, ePieceType i_PlayerCoinSymbol, bool i_IsComputer)
+        public Player(string i_PlayerName, ePieceType i_PlayerCoinSymbol, bool i_IsComputer)
         {
             r_PlayerName = i_PlayerName;
             r_PlayerPieceSymbol = i_PlayerCoinSymbol;
             m_IsComputer = i_IsComputer;
         }
 
-        internal string PlayerName
+        public string PlayerName
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Ex02
             }
         }
 
-        internal ePieceType PlayerPieceSymbol
+        public ePieceType PlayerPieceSymbol
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Ex02
             }
         }
 
-        internal int Points
+        public int Points
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Ex02
             }
         }
 
-        internal bool MustEatAgain
+        public bool MustEatAgain
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Ex02
             }
         }
 
-        internal List<Piece> PlayerPieces
+        public List<Piece> PlayerPieces
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Ex02
             }
         }
 
-        internal bool IsComputer
+        public bool IsComputer
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Ex02
             }
         }
 
-        internal void CreateMovesLists(GameBoard i_GameBoard, List<Move> i_RegularMovesList, List<Move> i_EatingMovesList)
+        public void CreateMovesLists(GameBoard i_GameBoard, List<Move> i_RegularMovesList, List<Move> i_EatingMovesList)
         {
             foreach (Piece piece in m_PlayerPieces)
             {
@@ -96,12 +96,12 @@ namespace Ex02
             }
         }
 
-        internal void RemovePieceFromList(Piece i_PieceToRemove)
+        public void RemovePieceFromList(Piece i_PieceToRemove)
         {
             m_PlayerPieces.Remove(i_PieceToRemove);
         }
 
-        internal bool IsPlayerHasMoves(GameBoard i_GameBoard)
+        public bool IsPlayerHasMoves(GameBoard i_GameBoard)
         {
             bool isPlayerHasMoves = false;
             List<Move> regularMovesList = new List<Move>();
@@ -116,7 +116,7 @@ namespace Ex02
             return isPlayerHasMoves;
         }
 
-        internal int CalculatePiecesValues()
+        public int CalculatePiecesValues()
         {
             int Total = 0;
 

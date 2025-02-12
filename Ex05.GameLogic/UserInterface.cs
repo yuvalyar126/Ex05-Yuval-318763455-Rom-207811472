@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace Ex02
+namespace Ex05.GameLogic
 {
-    internal enum eGameModeOptions
+    public enum eGameModeOptions
     {
         PlayerVsComputer = 1,
         PlayerVsPlayer = 2
     }
 
-    internal class UserInterface
+    public class UserInterface
     {
-        internal static string GetPlayerNameFromUser(ePlayerType i_PlayerType)
+        public static string GetPlayerNameFromUser(ePlayerType i_PlayerType)
         {
             string playerName;
             bool isValid;
@@ -27,7 +27,7 @@ namespace Ex02
             return playerName;
         }
 
-        internal static void StartGame()
+        public static void StartGame()
         {
             string firstPlayerName = GetPlayerNameFromUser(ePlayerType.FirstPlayer);
             int boardSize = GetBoardSizeFromUser();
@@ -47,7 +47,7 @@ namespace Ex02
             GameManager.playNewGame();
         }
 
-        internal static int GetBoardSizeFromUser()
+        public static int GetBoardSizeFromUser()
         {
             int boardSize = 0;
             bool isValid;
@@ -62,7 +62,7 @@ namespace Ex02
             return boardSize;
         }
 
-        internal static eGameModeOptions GetGameModeFromUser()
+        public static eGameModeOptions GetGameModeFromUser()
         {
             eGameModeOptions gameMode;
             bool isValid;
@@ -77,7 +77,7 @@ namespace Ex02
             return gameMode;
         }
 
-        internal static eGameStatusOptions AskForNewGame(Game i_Game)
+        public static eGameStatusOptions AskForNewGame(Game i_Game)
         {
             eGameStatusOptions gameStatus;
 
@@ -97,7 +97,7 @@ namespace Ex02
             return gameStatus;
         }
 
-        internal static void PrintBoard(GameBoard i_Board)
+        public static void PrintBoard(GameBoard i_Board)
         {
             int boardSize = i_Board.BoardSize;
 
@@ -149,7 +149,7 @@ namespace Ex02
             }
         }
 
-        internal static void PrintMove(Move i_Move, Game i_Game)
+        public static void PrintMove(Move i_Move, Game i_Game)
         {
             string from = string.Format("{0}{1}", (char)(i_Move.From.X + 'A'), (char)(i_Move.From.Y + 'a'));
             string to = string.Format("{0}{1}", (char)(i_Move.To.X + 'A'), (char)(i_Move.To.Y + 'a'));
@@ -165,7 +165,7 @@ namespace Ex02
             Console.WriteLine("{0}'s move was ({1}): {2}>{3}", nameToPrint, typeToPrint, from, to);
         }
 
-        internal static bool ShowComputerMove()
+        public static bool ShowComputerMove()
         {
             bool showComputerMove = false;
 
@@ -179,7 +179,7 @@ namespace Ex02
             return showComputerMove;
         }
 
-        internal static void PrintEndGameMessage(string i_EndGameMessage)
+        public static void PrintEndGameMessage(string i_EndGameMessage)
         {
             if (i_EndGameMessage != null)
             {
@@ -187,12 +187,12 @@ namespace Ex02
             }
         }
 
-        internal static void PrintCurrentPlayerTurnMessage(Player i_CurrentPlayer)
+        public static void PrintCurrentPlayerTurnMessage(Player i_CurrentPlayer)
         {
             Console.WriteLine("{0}'s turn ({1}): ", i_CurrentPlayer.PlayerName, i_CurrentPlayer.PlayerPieceSymbol);
         }
 
-        internal static string GetMoveStringFromUser(Player i_CurrentPlayer)
+        public static string GetMoveStringFromUser(Player i_CurrentPlayer)
         {
             string move;
 
@@ -201,37 +201,37 @@ namespace Ex02
             return move;
         }
 
-        internal static void PrintInvalidPlayerNameMessage()
+        public static void PrintInvalidPlayerNameMessage()
         {
             Console.WriteLine("Invalid input. Please enter a name up to 20 characters without spaces.");
         }
 
-        internal static void PrintOutOfRangeMessage()
+        public static void PrintOutOfRangeMessage()
         {
             Console.WriteLine("Invalid input. Board size must be 6, 8, or 10.");
         }
 
-        internal static void PrintInvalidInputMessage()
+        public static void PrintInvalidInputMessage()
         {
             Console.WriteLine("Invalid input. Please try again.");
         }
 
-        internal static void PrintInvalidGameModeMessage()
+        public static void PrintInvalidGameModeMessage()
         {
             Console.WriteLine("Invalid choice. Please enter 1 for playing against the computer or 2 for two players.");
         }
 
-        internal static void PrintInvalidMoveStringMessage()
+        public static void PrintInvalidMoveStringMessage()
         {
             Console.WriteLine("Invalid move. Please enter a move in the format: 'Ac>Bd'.");
         }
 
-        internal static void PrintInvalidMoveMessage()
+        public static void PrintInvalidMoveMessage()
         {
             Console.WriteLine("Invalid move. Please try again.");
         }
 
-        internal static void PrintInvalidMustEatMessage()
+        public static void PrintInvalidMustEatMessage()
         {
             Console.WriteLine("Invalid move. You must eat if you can.");
         }

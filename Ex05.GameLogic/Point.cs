@@ -1,17 +1,17 @@
-﻿namespace Ex02
+﻿namespace Ex05.GameLogic
 {
-    internal class Point
+    public class Point
     {
         private int m_X;
         private int m_Y;
 
-        internal Point(int x, int y)
+        public Point(int x, int y)
         {
             m_X = x;
             m_Y = y;
         }
 
-        internal int X
+        public int X
         {
             get
             {
@@ -24,7 +24,7 @@
             }
         }
 
-        internal int Y
+        public int Y
         {
             get
             {

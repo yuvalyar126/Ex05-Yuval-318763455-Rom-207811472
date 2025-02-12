@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ex02
+namespace Ex05.GameLogic
 {
-    internal enum eGameStatusOptions
+    public enum eGameStatusOptions
     {
         Running,
         Win,
@@ -11,7 +11,7 @@ namespace Ex02
         Exit,
     }
 
-    internal class Game
+    public class Game
     {
         private GameBoard m_GameBoard;
         private Player m_CurrentPlayer;
@@ -19,9 +19,9 @@ namespace Ex02
         private eGameStatusOptions m_Status = eGameStatusOptions.Running;
         private List<Move> m_PlayerRegularMoves = new List<Move>();
         private List<Move> m_PlayerEatingMoves = new List<Move>();
-        internal static Random s_Rand = new Random();
+        public static Random s_Rand = new Random();
 
-        internal Game(int i_BoardSize, Player i_CurrentPlayer, Player i_NextPlayer)
+        public Game(int i_BoardSize, Player i_CurrentPlayer, Player i_NextPlayer)
         {
             m_GameBoard = new GameBoard(i_BoardSize);
             m_CurrentPlayer = i_CurrentPlayer;
@@ -30,7 +30,7 @@ namespace Ex02
             CurrentPlayer.CreateMovesLists(m_GameBoard, m_PlayerRegularMoves, m_PlayerEatingMoves);
         }
 
-        internal Player CurrentPlayer
+        public Player CurrentPlayer
         {
             get
             {
@@ -38,7 +38,7 @@ namespace Ex02
             }
         }
 
-        internal Player NextPlayer
+        public Player NextPlayer
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Ex02
             }
         }
 
-        internal eGameStatusOptions Status
+        public eGameStatusOptions Status
         {
             get
             {
@@ -60,7 +60,7 @@ namespace Ex02
 
         }
 
-        internal GameBoard GameBoard
+        public GameBoard GameBoard
         {
             get
             {
@@ -156,7 +156,7 @@ namespace Ex02
             return isLegal;
         }
 
-        internal Move PlayTurn(out string o_EndGameMessage)
+        public Move PlayTurn(out string o_EndGameMessage)
         {
             Move currentMove;
             o_EndGameMessage = string.Empty;

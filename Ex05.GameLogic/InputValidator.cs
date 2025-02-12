@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Ex02
+namespace Ex05.GameLogic
 {
-    internal class InputValidator
+    public class InputValidator
     {
         public const int k_SmallBoardSize = 6;
         public const int k_MediumBoardSize = 8;
         public const int k_LargeBoardSize = 10;
 
-        internal static bool IsPlayerNameValid(string i_input)
+        public static bool IsPlayerNameValid(string i_input)
         {
             bool isValid = !string.IsNullOrEmpty(i_input) && IsOnlyLetters(i_input) && i_input.Length <= 20 && !i_input.Contains(" ");
 
@@ -20,7 +20,7 @@ namespace Ex02
             return isValid;
         }
 
-        internal static bool IsOnlyLetters(string i_String)
+        public static bool IsOnlyLetters(string i_String)
         {
             bool isOnlyLetters = true;
             int stringLength = i_String.Length;
@@ -40,7 +40,7 @@ namespace Ex02
             return isValid;
         }
 
-        internal static bool IsBoardSizeInputValid(string i_UserInput, out int o_BoardSize)
+        public static bool IsBoardSizeInputValid(string i_UserInput, out int o_BoardSize)
         {
             bool isBoardSizeValid;
             bool isNumber = int.TryParse(i_UserInput, out o_BoardSize);
@@ -63,7 +63,7 @@ namespace Ex02
             return isBoardSizeValid;
         }
 
-        internal static bool IsGameModeValid(string i_UserInput, out eGameModeOptions o_GameMode)
+        public static bool IsGameModeValid(string i_UserInput, out eGameModeOptions o_GameMode)
         {
             bool isValid = Enum.TryParse(i_UserInput, out o_GameMode) && Enum.IsDefined(typeof(eGameModeOptions), o_GameMode);
 
@@ -75,7 +75,7 @@ namespace Ex02
             return isValid;
         }
 
-        internal static bool IsMoveStringValid(string i_MoveString)
+        public static bool IsMoveStringValid(string i_MoveString)
         {
             bool isValid = (i_MoveString.Length == 5 && i_MoveString[2] == '>' && char.IsUpper(i_MoveString[0]) && char.IsLower(i_MoveString[1]) && char.IsUpper(i_MoveString[3]) && char.IsLower(i_MoveString[4]));
 

@@ -1,12 +1,12 @@
-﻿namespace Ex02
+﻿namespace Ex05.GameLogic
 {
-    internal class GameManager
+    public class GameManager
     {
         private readonly int r_BoardSize;
         private readonly Player r_PlayerOne;
         private readonly Player r_PlayerTwo;
 
-        internal GameManager(eGameModeOptions i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
+        public GameManager(eGameModeOptions i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
         {
             bool isComputer = i_GameMode == eGameModeOptions.PlayerVsComputer;
 
@@ -15,7 +15,7 @@
             r_PlayerTwo = new Player(i_SecondPlayerName, ePieceType.O, isComputer);
         }
 
-        internal void playNewGame()
+        public void playNewGame()
         {
             eGameStatusOptions gameStatus;
             do
@@ -33,7 +33,7 @@
 
             while (gameStatus == eGameStatusOptions.Running)
             {
-                Ex02.ConsoleUtils.Screen.Clear();
+                Ex05.GameLogic.ConsoleUtils.Screen.Clear();
                 if (!game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
                 {
                     UserInterface.PrintBoard(game.GameBoard);
@@ -52,7 +52,7 @@
             return gameStatus;
         }
 
-        internal static Player GetWinner(Game i_Game)
+        public static Player GetWinner(Game i_Game)
         {
             Player winner = null;
 
