@@ -4,6 +4,13 @@ namespace Ex05.GameLogic
 {
     public class GameBoard
     {
+        public enum eBoardSize
+        {
+            Small = 6,
+            Medium = 8,
+            Large = 10
+        }
+
         private readonly int r_BoardSize;
         private readonly Piece[,] m_Board;
 

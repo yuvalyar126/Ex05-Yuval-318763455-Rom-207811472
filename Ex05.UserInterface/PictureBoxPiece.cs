@@ -1,4 +1,5 @@
 ﻿using Ex05.GameLogic;
+using Ex05.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
 ﻿namespace Ex05.UserInterface
 {
-    partial class Form1
+    partial class FormCheckersGame
     {
         /// <summary>
         /// Required designer variable.
@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.playerControl1 = new Ex05.UserInterface.PlayerControl();
             this.SuspendLayout();
             // 
-            // button1
+            // playerControl1
             // 
-            this.button1.Location = new System.Drawing.Point(334, 301);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(125, 75);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.playerControl1.BackColor = System.Drawing.SystemColors.Control;
+            this.playerControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.playerControl1.Location = new System.Drawing.Point(3, 2);
+            this.playerControl1.Name = "playerControl1";
+            this.playerControl1.Size = new System.Drawing.Size(424, 52);
+            this.playerControl1.TabIndex = 0;
             // 
-            // Form1
+            // FormCheckersGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(878, 508);
-            this.Controls.Add(this.button1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.playerControl1);
+            this.Name = "FormCheckersGame";
+            this.Text = "FormCheckersGame";
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
+        private PlayerControl player1Control;
+        private PlayerControl player2Control;
+        private PlayerControl playerControl1;
     }
 }
-

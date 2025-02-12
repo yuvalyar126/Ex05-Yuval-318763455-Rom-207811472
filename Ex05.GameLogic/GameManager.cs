@@ -33,7 +33,7 @@
 
             while (gameStatus == eGameStatusOptions.Running)
             {
-                Ex05.GameLogic.ConsoleUtils.Screen.Clear();
+                
                 if (!game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
                 {
                     UserInterface.PrintBoard(game.GameBoard);
