@@ -16,7 +16,8 @@
         }
 
         internal Move(string i_MoveString)
-        {
+        { 
+
             m_From = new Point(i_MoveString[0] - 'A', i_MoveString[1] - 'a');
             m_To = new Point(i_MoveString[3] - 'A', i_MoveString[4] - 'a');
         }
