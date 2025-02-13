@@ -10,9 +10,17 @@ namespace Ex05.GameLogic
         private readonly Player r_PlayerTwo;
         private Game m_Game = null;
 
-        public event Action<Move> MoveExecuted;
+        
+        
 
-        public event Action<bool> ActivePlayerChanged;
+
+
+        
+
+        //protected virtual void OnCellChanged(Point i_From, Point i_To)
+        //{
+        //    CellChanged?.Invoke(i_From, i_To);
+        //}
 
         public GameManager(eGameMode i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
         {
@@ -21,6 +29,7 @@ namespace Ex05.GameLogic
             r_BoardSize = i_BoardSize;
             r_PlayerOne = new Player(i_FirstPlayerName, ePieceType.X, false, ePieceColor.Black);
             r_PlayerTwo = new Player(i_SecondPlayerName, ePieceType.O, isComputer, ePieceColor.Red);
+            m_Game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
         }
 
 
@@ -33,31 +42,25 @@ namespace Ex05.GameLogic
         }
 
 
-        protected virtual void OnMoveExecuted(Move i_Move)
-        {
-            MoveExecuted?.Invoke(i_Move);
-        }
+       
 
 
-        //protected virtual void OnActivePlayerChanged()
+        //public void playNewGame()
         //{
-        //    ActivePlayerChanged?.Invoke(r_PlayerOne.IsActive);
+        //    eGameStatusOptions gameStatus;
+        //    do
+        //    {
+        //        gameStatus = GameLoop();
+        //    } while (gameStatus != eGameStatusOptions.Exit);
         //}
 
 
-        public void playNewGame()
-        {
-            eGameStatusOptions gameStatus;
-            do
-            {
-                gameStatus = gameLoop();
-            } while (gameStatus != eGameStatusOptions.Exit);
-        }
 
-        private eGameStatusOptions gameLoop()
+
+        public eGameStatusOptions GameLoop(Point i_From, Point i_To)
         {
             eGameStatusOptions gameStatus = eGameStatusOptions.Running;
-            m_Game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
+            
             Move lastMove = null;
             string endGameMessage = string.Empty;
 
@@ -66,16 +69,16 @@ namespace Ex05.GameLogic
                 
                 if (!m_Game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
                 {
-                    lastMove = m_Game.PlayTurn(out endGameMessage);
-                    OnMoveExecuted(lastMove);
+                    lastMove = m_Game.PlayTurn(i_From, i_To,out endGameMessage);
+                  //  OnMoveChosen();
                     gameStatus = m_Game.Status;
                 }
 
                 
             }
 
-            UserInterface.PrintEndGameMessage(endGameMessage);
-            gameStatus = UserInterface.AskForNewGame(m_Game);
+           // UserInterface.PrintEndGameMessage(endGameMessage);
+            //gameStatus = UserInterface.AskForNewGame(m_Game);
             return gameStatus;
         }
 

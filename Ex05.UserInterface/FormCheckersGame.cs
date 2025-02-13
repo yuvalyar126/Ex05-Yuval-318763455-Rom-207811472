@@ -27,6 +27,8 @@ namespace Ex05.UserInterface
         private PictureBoxPiece m_SelectedPiece;
         private GameManager m_GameManager;
         private int m_BoardSize;
+
+
         
 
         public FormCheckersGame()
@@ -53,9 +55,13 @@ namespace Ex05.UserInterface
             Enums.eGameMode gameMode = r_FormGameSettings.IsPlayer2Computer ? Enums.eGameMode.PlayerAgainstComputer : Enums.eGameMode.PlayerAgainstPlayer;
 
             m_GameManager = new GameManager(gameMode, player1Name, player2Name, boardSize);
-            //m_GameManager.MoveExecuted += move_piece; 
+            m_GameManager.Game.MoveExecuted += Game_MoveExecuted;
+            m_GameManager.Game.ActivePlayerChanged += Game_ActivePlayerChanged;
+            m_GameManager.Game.PieceEaten += Game_PieceEaten;
+
+
+
             //game.GameOver += game_GameOver;
-            //game.TurnChanged += game_TurnChanged;
             //game.ScoreChanged += game_ScoreChanged;
             //game.BoardChanged += game_BoardChanged;
             //game.InitializeGame();
@@ -64,14 +70,52 @@ namespace Ex05.UserInterface
             base.ShowDialog();
         }
 
-        
+        private void Game_PieceEaten(GameLogic.Point i_EatenPieceLocation)
+        {
+            if (playerControl1.IsPlayingNow)
+            {
+                removePieceFromBoard(i_EatenPieceLocation.X, i_EatenPieceLocation.Y, m_RedPiecesPictureBox);
+            }
+            else
+            {
+                removePieceFromBoard(i_EatenPieceLocation.X, i_EatenPieceLocation.Y, m_BlackPiecesPictureBox);
+            }
+        }
+
+        private void Game_ActivePlayerChanged()
+        {
+            if (playerControl1.IsPlayingNow)
+            {
+                playerControl1.SetTurn(false);
+                playerControl2.SetTurn(true);
+            }
+            else
+            {
+                playerControl1.SetTurn(true);
+                playerControl2.SetTurn(false);
+            }
+        }
+
+        private void Game_MoveExecuted(GameLogic.Point from, GameLogic.Point to)
+        {
+            MoveSelectedPiece(to.X, to.Y);
+        }
+
+        public void MoveSelectedPiece(int i_RowOfNewSquare, int i_ColumnOfNewSquare)
+        {
+            if (m_SelectedPiece != null)
+            {
+                m_SelectedPiece.CurrentCell = m_ButtonCells[i_RowOfNewSquare, i_ColumnOfNewSquare];
+                markSelectedPiece(m_SelectedPiece);
+            }
+        }
 
         public void initForm()
         {
             m_BoardSize = (int)r_FormGameSettings.BoardSize;
             m_NumberOfPiecesForEachPlayer = (m_BoardSize / 2) * ((m_BoardSize / 2) - 1);
             m_ButtonCells = new ButtonCell[m_BoardSize, m_BoardSize];
-            m_WhitePiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
+            m_RedPiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
             m_BlackPiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
 
 
@@ -94,9 +138,9 @@ namespace Ex05.UserInterface
         {
             for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
             {
-                m_WhitePiecesPictureBox[i] = new PictureBoxPiece(Enums.ePieceColor.Red);
-                m_WhitePiecesPictureBox[i].Image = Properties.Resources.red_piece;
-                initPictureBoxPiece(m_WhitePiecesPictureBox[i]);
+                m_RedPiecesPictureBox[i] = new PictureBoxPiece(Enums.ePieceColor.Red);
+                m_RedPiecesPictureBox[i].Image = Properties.Resources.red_piece;
+                initPictureBoxPiece(m_RedPiecesPictureBox[i]);
 
                 m_BlackPiecesPictureBox[i] = new PictureBoxPiece(Enums.ePieceColor.Black);
                 m_BlackPiecesPictureBox[i].Image = Properties.Resources.black_piece;
@@ -144,30 +188,45 @@ namespace Ex05.UserInterface
         }
 
 
+        //private void buttonCell_Clicked(object sender, EventArgs e)
+        //{
+        //    if (m_SelectedPiece == null)
+        //        return; // No piece selected, do nothing
+
+        //    ButtonCell targetCell = sender as ButtonCell;
+        //    if (targetCell == null)
+        //        return; // Ensure the clicked object is a button cell
+
+        //    // Get piece position
+        //    int row = targetCell.LocationInBoard.Y;
+        //    int column = targetCell.LocationInBoard.X;
+
+        //    // Attempt to make the move
+        //    if (true) // Replace with actual move logic
+        //    {
+        //      MoveSelectedPiece(row, column);
+        //    }
+
+        //    // Deselect piece after move attempt
+        //    //m_SelectedPiece.BackColor = Color.White;
+        //    m_SelectedPiece = null;
+        //}
+
+
         private void buttonCell_Clicked(object sender, EventArgs e)
         {
+
             if (m_SelectedPiece == null)
                 return; // No piece selected, do nothing
 
             ButtonCell targetCell = sender as ButtonCell;
-            if (targetCell == null)
-                return; // Ensure the clicked object is a button cell
+            Ex05.GameLogic.Point from = m_SelectedPiece.CurrentCell.LocationInBoard;
+            Ex05.GameLogic.Point to = targetCell.LocationInBoard;
+            
+            eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
 
-            // Get piece position
-            int row = targetCell.LocationInBoard.Y;
-            int column = targetCell.LocationInBoard.X;
 
-            // Attempt to make the move
-            if (true) // Replace with actual move logic
-            {
-              MoveSelectedPiece(row, column);
-            }
-
-            // Deselect piece after move attempt
-            //m_SelectedPiece.BackColor = Color.White;
-            m_SelectedPiece = null;
         }
-
 
 
 
@@ -183,7 +242,7 @@ namespace Ex05.UserInterface
                 for (byte column = 0; column < m_BoardSize; column++)
                 {
                     m_ButtonCells[row, column] = new ButtonCell(row, column);
-                    m_ButtonCells[row, column].LocationInBoard = new Ex05.GameLogic.Point(column, row);
+                    m_ButtonCells[row, column].LocationInBoard = new Ex05.GameLogic.Point(row, column);
 
                     // Check if the current ButtonCell is black or white
                     if (((column % 2) == 0 && (row % 2) == 0) || ((column % 2) != 0 && (row % 2) != 0))
@@ -212,7 +271,7 @@ namespace Ex05.UserInterface
 
         private void initPiecesOnBoard()
         {
-            initOneSidePiecesOnBoard(0, (m_BoardSize / 2) - 1, m_WhitePiecesPictureBox);
+            initOneSidePiecesOnBoard(0, (m_BoardSize / 2) - 1, m_RedPiecesPictureBox);
             initOneSidePiecesOnBoard((m_BoardSize / 2) + 1, m_BoardSize, m_BlackPiecesPictureBox);
         }
 
@@ -262,7 +321,7 @@ namespace Ex05.UserInterface
 
 
 
-        private void removePieceOnSquare(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumm, PictureBoxPiece[] i_Pieces)
+        private void removePieceFromBoard(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumm, PictureBoxPiece[] i_Pieces)
         {
             ButtonCell currentButtonCell = m_ButtonCells[i_CurrentCellPieceRow, i_CurrentCellPieceColumm];
 
@@ -281,6 +340,7 @@ namespace Ex05.UserInterface
                 }
             }
         }
+
 
 
         private void markSelectedPiece(object i_PieceSender)
@@ -311,14 +371,7 @@ namespace Ex05.UserInterface
             }
         }
 
-        public void MoveSelectedPiece(int i_RowOfNewSquare, int i_ColumnOfNewSquare)
-        {
-            if (m_SelectedPiece != null)
-            {
-                m_SelectedPiece.CurrentCell = m_ButtonCells[i_RowOfNewSquare, i_ColumnOfNewSquare]; 
-                markSelectedPiece(m_SelectedPiece);
-            }
-        }
+       
 
     }
 }

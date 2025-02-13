@@ -14,7 +14,7 @@ namespace Ex05.UserInterface
 
         public ButtonCell(int i_Row, int i_Column)
         {
-            m_LocationInBoard = new Point(i_Column, i_Row);
+            m_LocationInBoard = new Point(i_Row, i_Column);
         }
 
         public Point LocationInBoard

@@ -39,7 +39,7 @@ namespace Ex05.GameLogic
             }
 
             GameManager GameManager = new GameManager(gameMode, firstPlayerName, secondPlayerName, boardSize);
-            GameManager.playNewGame();
+           
         }
 
         public static int GetBoardSizeFromUser()

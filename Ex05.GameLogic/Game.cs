@@ -11,8 +11,15 @@ namespace Ex05.GameLogic
         Exit,
     }
 
+
     public class Game
     {
+        public event Action<Point, Point> MoveExecuted;
+        public event Action ActivePlayerChanged;
+        public event Action <Point> PieceEaten;
+
+
+
         private GameBoard m_GameBoard;
         private Player m_CurrentPlayer;
         private Player m_NextPlayer;
@@ -20,6 +27,22 @@ namespace Ex05.GameLogic
         private List<Move> m_PlayerRegularMoves = new List<Move>();
         private List<Move> m_PlayerEatingMoves = new List<Move>();
         public static Random s_Rand = new Random();
+
+
+        protected virtual void OnMoveExecuted(Point i_From, Point i_To)
+        {
+            MoveExecuted?.Invoke(i_From, i_To);
+        }
+
+        protected virtual void OnActivePlayerChanged()
+        {
+            ActivePlayerChanged?.Invoke();
+        }
+
+        protected virtual void OnPieceEaten(Point i_EatenPieceLocation)
+        {
+            PieceEaten?.Invoke(i_EatenPieceLocation);
+        }
 
 
         public Game(int i_BoardSize, Player i_CurrentPlayer, Player i_NextPlayer)
@@ -79,6 +102,8 @@ namespace Ex05.GameLogic
         private void executeMove(Move i_MoveToExecute, Piece i_PieceToMove)
         {
             m_GameBoard.UpdateMoveOnBoard(i_MoveToExecute, i_PieceToMove);
+            OnMoveExecuted(i_MoveToExecute.From, i_MoveToExecute.To);
+
             m_GameBoard.CheckIfPieceInKingPositionAndPromote(i_PieceToMove);
 
             if (i_MoveToExecute.IsEatingMove)
@@ -86,6 +111,7 @@ namespace Ex05.GameLogic
                 Piece eatenPiece = m_GameBoard.GetPieceInCellByPosition(i_MoveToExecute.EatenPieceLocation);
                 m_GameBoard.RemovePieceFromBoard(eatenPiece);
                 m_NextPlayer.RemovePieceFromList(eatenPiece);
+                OnPieceEaten(i_MoveToExecute.EatenPieceLocation);
             }
         }
 
@@ -120,65 +146,87 @@ namespace Ex05.GameLogic
             return move;
         }
 
-        private bool isLegalMove(Move i_InputMove)
+        private bool isLegalMove(Move i_MoveToCheck)
         {
             bool isLegal = false;
 
-            if (i_InputMove == null)
+            if (i_MoveToCheck == null)
             {
                 isLegal = false;
-                UserInterface.PrintInvalidMoveMessage();
+               // UserInterface.PrintInvalidMoveMessage();
 
             }
             else if (m_PlayerEatingMoves.Count != 0)
             {
-                if (isMoveInList(i_InputMove, m_PlayerEatingMoves))
+                if (isMoveInList(i_MoveToCheck, m_PlayerEatingMoves))
                 {
                     isLegal = true;
                 }
                 else
                 {
-                    UserInterface.PrintInvalidMustEatMessage();
+                 //   UserInterface.PrintInvalidMustEatMessage();
                 }
 
             }
             else
             {
-                if (isMoveInList(i_InputMove, m_PlayerRegularMoves))
+                if (isMoveInList(i_MoveToCheck, m_PlayerRegularMoves))
                 {
                     isLegal = true;
                 }
                 else
                 {
-                    UserInterface.PrintInvalidMoveMessage();
+                   // UserInterface.PrintInvalidMoveMessage();
                 }
             }
 
             return isLegal;
         }
 
-        public Move PlayTurn(out string o_EndGameMessage)
+        //public Move PlayTurn(out string o_EndGameMessage)
+        //{
+        //    Move currentMove;
+        //    o_EndGameMessage = string.Empty;
+
+        //    if (m_CurrentPlayer.IsComputer)
+        //    {
+        //        currentMove = getComputerMove();
+        //    }
+        //    else
+        //    {
+
+        //        currentMove = getHumanMove(out o_EndGameMessage);
+        //    }
+
+        //    if (currentMove != null)
+        //    {
+        //        MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+        //    }
+
+        //    return currentMove;
+        //}
+
+
+
+
+        public Move PlayTurn(Point i_From, Point i_To, out string o_EndGameMessage)
         {
-            Move currentMove;
+            Move currentMove = new Move(i_From, i_To);
+            currentMove = getMoveFromLists(currentMove);
             o_EndGameMessage = string.Empty;
-
-            if (m_CurrentPlayer.IsComputer)
-            {
-                currentMove = getComputerMove();
-            }
-            else
-            {
-
-                currentMove = getHumanMove(out o_EndGameMessage);
-            }
 
             if (currentMove != null)
             {
-                MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+                if (isLegalMove(currentMove))
+                {
+                    MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+                }
             }
 
             return currentMove;
         }
+
+
 
         private Move getComputerMove()
         {
@@ -259,6 +307,7 @@ namespace Ex05.GameLogic
             }
             CurrentPlayer.MustEatAgain = false;
             prepareForNextTurn();
+            
         }
 
         private void prepareForExtraTurn(Piece i_movingPiece, Move i_Move)
@@ -272,6 +321,8 @@ namespace Ex05.GameLogic
             m_PlayerRegularMoves.Clear();
             m_PlayerEatingMoves.Clear();
             switchTurnsBetweenPlayers();
+            OnActivePlayerChanged();
+
             m_CurrentPlayer.CreateMovesLists(m_GameBoard, m_PlayerRegularMoves, m_PlayerEatingMoves);
         }
 

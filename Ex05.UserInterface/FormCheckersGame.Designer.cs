@@ -90,7 +90,7 @@
         #endregion
         private int m_NumberOfPiecesForEachPlayer;
         private ButtonCell[,] m_ButtonCells;
-        private PictureBoxPiece[] m_WhitePiecesPictureBox;
+        private PictureBoxPiece[] m_RedPiecesPictureBox;
         private PictureBoxPiece[] m_BlackPiecesPictureBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private PlayerControl playerControl1;
