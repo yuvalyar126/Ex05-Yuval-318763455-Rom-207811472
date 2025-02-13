@@ -70,6 +70,7 @@
             this.playerControl2.PlayerScore = "0";
             this.playerControl2.Size = new System.Drawing.Size(380, 26);
             this.playerControl2.TabIndex = 1;
+            this.playerControl2.lblPlayerName.Click += this.playerControl2_Click;
             // 
             // FormCheckersGame
             // 

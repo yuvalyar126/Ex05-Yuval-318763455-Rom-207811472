@@ -162,10 +162,6 @@ namespace Ex05.UserInterface
         {
             playerControl1.PlayerName = r_FormGameSettings.Player1Name;
             playerControl2.PlayerName = r_FormGameSettings.Player2Name;
-            if (r_FormGameSettings.IsPlayer2Computer)
-            {
-                playerControl2.Click += new EventHandler(this.playerControl2_Click);
-            }
         }
 
         private void initPieces()
@@ -223,7 +219,10 @@ namespace Ex05.UserInterface
 
         private void playerControl2_Click(object sender, EventArgs e)
         {
-            eGameStatusOptions gameStatus = m_GameManager.GameLoop(null, null);
+            if (r_FormGameSettings.IsPlayer2Computer && playerControl2.IsPlayingNow)
+            {
+                eGameStatusOptions gameStatus = m_GameManager.GameLoop(null, null);
+            }
         }
 
 

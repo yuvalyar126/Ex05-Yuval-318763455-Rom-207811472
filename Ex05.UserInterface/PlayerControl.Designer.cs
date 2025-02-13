@@ -89,7 +89,7 @@ namespace Ex05.UserInterface
         }
 
         #endregion
-        private System.Windows.Forms.Label lblPlayerName;
+        public System.Windows.Forms.Label lblPlayerName;
         private System.Windows.Forms.Label lblScore;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
