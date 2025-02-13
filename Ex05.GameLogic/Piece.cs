@@ -25,10 +25,11 @@ namespace Ex05.GameLogic
         private Point m_Position;
 
 
-        public Piece(ePieceType type, int row, int column)
+        public Piece(ePieceType i_Type, ePieceColor i_Color ,int i_Row, int i_Column)
         {
-            m_Type = type;
-            m_Position = new Point(row, column);
+            m_Type = i_Type;
+            m_Color = i_Color;
+            m_Position = new Point(i_Row, i_Column);
         }
 
         public ePieceType Type

@@ -100,13 +100,13 @@ namespace Ex05.GameLogic
                 {
                     if (row < r_BoardSize / 2 - 1 && (row + col) % 2 != 0)
                     {
-                        Piece piece = new Piece(ePieceType.O, row, col);
+                        Piece piece = new Piece(ePieceType.O, Enums.ePieceColor.Red ,row, col);
                         m_Board[row, col] = piece;
                         i_Player2.PlayerPieces.Add(piece);
                     }
                     else if (row > r_BoardSize / 2 && (row + col) % 2 != 0)
                     {
-                        Piece piece = new Piece(ePieceType.X, row, col);
+                        Piece piece = new Piece(ePieceType.X, Enums.ePieceColor.Black, row, col);
                         m_Board[row, col] = piece;
                         i_Player1.PlayerPieces.Add(piece);
                     }
