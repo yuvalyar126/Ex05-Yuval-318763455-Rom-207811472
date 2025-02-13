@@ -21,6 +21,7 @@ namespace Ex05.GameLogic
         private List<Move> m_PlayerEatingMoves = new List<Move>();
         public static Random s_Rand = new Random();
 
+
         public Game(int i_BoardSize, Player i_CurrentPlayer, Player i_NextPlayer)
         {
             m_GameBoard = new GameBoard(i_BoardSize);
