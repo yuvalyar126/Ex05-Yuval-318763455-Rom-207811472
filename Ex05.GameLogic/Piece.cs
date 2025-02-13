@@ -94,7 +94,7 @@ namespace Ex05.GameLogic
             {
                 isOpponentPiece = m_Type == ePieceType.O || m_Type == ePieceType.U;
             }
-            else if (i_CurrentPieceType == ePieceType.O || i_CurrentPieceType == ePieceType.K)
+            else if (i_CurrentPieceType == ePieceType.O || i_CurrentPieceType == ePieceType.U)
             {
                 isOpponentPiece = m_Type == ePieceType.X || m_Type == ePieceType.K;
             }

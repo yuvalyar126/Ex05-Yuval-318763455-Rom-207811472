@@ -47,6 +47,7 @@ namespace Ex05.UserInterface
             this.lblPlayerName.TabIndex = 0;
             this.lblPlayerName.Text = "Player Name:";
             this.lblPlayerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            
             // 
             // lblScore
             // 

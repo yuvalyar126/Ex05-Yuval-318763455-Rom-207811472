@@ -232,14 +232,22 @@ namespace Ex05.GameLogic
             currentMove = getMoveFromLists(currentMove);
             o_EndGameMessage = string.Empty;
 
-            if (currentMove != null)
+            if (CurrentPlayer.IsComputer)
             {
-                if (isLegalMove(currentMove))
+                currentMove = getComputerMove();
+                MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+
+            }
+            else
+            {
+                if (currentMove != null)
                 {
-                    MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+                    if (isLegalMove(currentMove))
+                    {
+                        MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+                    }
                 }
             }
-
             return currentMove;
         }
 

@@ -87,7 +87,7 @@ namespace Ex05.UserInterface
                     }
 
                 }
-                else
+                else if (i_kingColor == Enums.ePieceColor.Black)
                 {
                     if (m_BlackPiecesPictureBox[i] != null)
                     {
@@ -162,6 +162,10 @@ namespace Ex05.UserInterface
         {
             playerControl1.PlayerName = r_FormGameSettings.Player1Name;
             playerControl2.PlayerName = r_FormGameSettings.Player2Name;
+            if (r_FormGameSettings.IsPlayer2Computer)
+            {
+                playerControl2.Click += new EventHandler(this.playerControl2_Click);
+            }
         }
 
         private void initPieces()
@@ -217,6 +221,11 @@ namespace Ex05.UserInterface
             markSelectedPiece(sender);
         }
 
+        private void playerControl2_Click(object sender, EventArgs e)
+        {
+            eGameStatusOptions gameStatus = m_GameManager.GameLoop(null, null);
+        }
+
 
         //private void buttonCell_Clicked(object sender, EventArgs e)
         //{
@@ -253,7 +262,19 @@ namespace Ex05.UserInterface
             Ex05.GameLogic.Point from = m_SelectedPiece.CurrentCell.LocationInBoard;
             Ex05.GameLogic.Point to = targetCell.LocationInBoard;
 
-            eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
+            if (r_FormGameSettings.IsPlayer2Computer)
+            { 
+                if(playerControl1.IsPlayingNow)
+                {
+                    eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
+                }
+               
+            }
+            else
+            {
+                eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
+            }
+            
 
 
         }

@@ -53,7 +53,9 @@ namespace Ex05.UserInterface
             }
         }
 
-     
+       
+
+
 
         public void SetTurn(bool isTurn)
         {

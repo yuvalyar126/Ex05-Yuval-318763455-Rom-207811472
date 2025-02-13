@@ -66,15 +66,9 @@ namespace Ex05.GameLogic
 
             if (gameStatus == eGameStatusOptions.Running)
             {
-                
-                if (!m_Game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
-                {
-                    lastMove = m_Game.PlayTurn(i_From, i_To,out endGameMessage);
-                  //  OnMoveChosen();
-                    gameStatus = m_Game.Status;
-                }
+                lastMove = m_Game.PlayTurn(i_From, i_To, out endGameMessage);
+                gameStatus = m_Game.Status;
 
-                
             }
 
            // UserInterface.PrintEndGameMessage(endGameMessage);
