@@ -1,0 +1,13 @@
+
+
+# Ignore other common files and directories
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.vs
+*.user
+*.suo
+*.vscode/
+
