@@ -63,9 +63,29 @@ namespace Ex05.UserInterface.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap black_king {
+            get {
+                object obj = ResourceManager.GetObject("black_king", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap black_piece {
             get {
                 object obj = ResourceManager.GetObject("black_piece", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap red_king {
+            get {
+                object obj = ResourceManager.GetObject("red_king", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -55,17 +55,17 @@ namespace Ex05.GameLogic
             return isOpponentPiece;
         }
 
-        public void CheckIfPieceInKingPositionAndPromote(Piece i_Piece)
-        {
-            if (i_Piece.Type == ePieceType.X && i_Piece.Position.X == 0)
-            {
-                i_Piece.PromoteToKing();
-            }
-            else if (i_Piece.Type == ePieceType.O && i_Piece.Position.X == BoardSize - 1)
-            {
-                i_Piece.PromoteToKing();
-            }
-        }
+        //public void CheckIfPieceInKingPositionAndPromote(Piece i_Piece)
+        //{
+        //    if (i_Piece.Type == ePieceType.X && i_Piece.Position.X == 0)
+        //    {
+        //        i_Piece.PromoteToKing();
+        //    }
+        //    else if (i_Piece.Type == ePieceType.O && i_Piece.Position.X == BoardSize - 1)
+        //    {
+        //        i_Piece.PromoteToKing();
+        //    }
+        //}
 
         public bool IsCellEmpty(int i_Row, int i_Col)
         {

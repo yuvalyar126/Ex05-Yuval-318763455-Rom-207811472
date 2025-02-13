@@ -29,7 +29,7 @@ namespace Ex05.UserInterface
         private int m_BoardSize;
 
 
-        
+
 
         public FormCheckersGame()
         {
@@ -40,7 +40,7 @@ namespace Ex05.UserInterface
         {
             r_FormGameSettings.ShowDialog();
 
-            if(r_FormGameSettings.DialogResult == DialogResult.OK)
+            if (r_FormGameSettings.DialogResult == DialogResult.OK)
             {
                 initializeGame();
             }
@@ -58,6 +58,7 @@ namespace Ex05.UserInterface
             m_GameManager.Game.MoveExecuted += Game_MoveExecuted;
             m_GameManager.Game.ActivePlayerChanged += Game_ActivePlayerChanged;
             m_GameManager.Game.PieceEaten += Game_PieceEaten;
+            m_GameManager.Game.BecameKing += Game_BecameKing;
 
 
 
@@ -68,6 +69,35 @@ namespace Ex05.UserInterface
 
 
             base.ShowDialog();
+        }
+
+        private void Game_BecameKing(GameLogic.Point i_KingLocation, ePieceColor i_kingColor)
+        {
+            ButtonCell kingCell = m_ButtonCells[i_KingLocation.X, i_KingLocation.Y];
+            for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
+            {
+                if (i_kingColor == Enums.ePieceColor.Red)
+                {
+                    if (m_RedPiecesPictureBox[i] != null)
+                    {
+                        if (m_RedPiecesPictureBox[i].CurrentCell == kingCell)
+                        {
+                            m_RedPiecesPictureBox[i].Image = Properties.Resources.red_king;
+                        }
+                    }
+
+                }
+                else
+                {
+                    if (m_BlackPiecesPictureBox[i] != null)
+                    {
+                        if (m_BlackPiecesPictureBox[i].CurrentCell == kingCell)
+                        {
+                            m_BlackPiecesPictureBox[i].Image = Properties.Resources.black_king;
+                        }
+                    }
+                }
+            }
         }
 
         private void Game_PieceEaten(GameLogic.Point i_EatenPieceLocation)
@@ -222,7 +252,7 @@ namespace Ex05.UserInterface
             ButtonCell targetCell = sender as ButtonCell;
             Ex05.GameLogic.Point from = m_SelectedPiece.CurrentCell.LocationInBoard;
             Ex05.GameLogic.Point to = targetCell.LocationInBoard;
-            
+
             eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
 
 
@@ -260,12 +290,12 @@ namespace Ex05.UserInterface
                     this.m_ButtonCells[row, column].Size = new System.Drawing.Size((int)eButtonData.ButtonSize, (int)eButtonData.ButtonSize);
                     this.m_ButtonCells[row, column].FlatStyle = System.Windows.Forms.FlatStyle.Flat;
                     xCoordinate += (int)eButtonData.ButtonSize;
-                    
+
                 }
 
                 yCoordinate += (int)eButtonData.ButtonSize;
                 xCoordinate = (int)eButtonData.ButtonXStartPosition;
-                
+
             }
         }
 
@@ -321,9 +351,9 @@ namespace Ex05.UserInterface
 
 
 
-        private void removePieceFromBoard(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumm, PictureBoxPiece[] i_Pieces)
+        private void removePieceFromBoard(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumn, PictureBoxPiece[] i_Pieces)
         {
-            ButtonCell currentButtonCell = m_ButtonCells[i_CurrentCellPieceRow, i_CurrentCellPieceColumm];
+            ButtonCell currentButtonCell = m_ButtonCells[i_CurrentCellPieceRow, i_CurrentCellPieceColumn];
 
             // scan array and locate the piece whose cell Point are received in function:
             for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
@@ -347,7 +377,7 @@ namespace Ex05.UserInterface
         {
             PictureBoxPiece selectedPiece = i_PieceSender as PictureBoxPiece;
 
-            if (m_SelectedPiece!=null)
+            if (m_SelectedPiece != null)
             {
                 m_SelectedPiece.BackColor = Color.White; // Return the color of previous selected piece to white.
 
@@ -371,7 +401,7 @@ namespace Ex05.UserInterface
             }
         }
 
-       
+
 
     }
 }

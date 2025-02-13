@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ex05.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Ex05.GameLogic
@@ -17,6 +18,7 @@ namespace Ex05.GameLogic
         public event Action<Point, Point> MoveExecuted;
         public event Action ActivePlayerChanged;
         public event Action <Point> PieceEaten;
+        public event Action <Point, Enums.ePieceColor> BecameKing;
 
 
 
@@ -42,6 +44,11 @@ namespace Ex05.GameLogic
         protected virtual void OnPieceEaten(Point i_EatenPieceLocation)
         {
             PieceEaten?.Invoke(i_EatenPieceLocation);
+        }
+
+        protected virtual void OnBecameKing(Point i_NewKingLocation, ePieceColor i_KingColor)
+        {
+            BecameKing?.Invoke(i_NewKingLocation, i_KingColor);
         }
 
 
@@ -104,7 +111,7 @@ namespace Ex05.GameLogic
             m_GameBoard.UpdateMoveOnBoard(i_MoveToExecute, i_PieceToMove);
             OnMoveExecuted(i_MoveToExecute.From, i_MoveToExecute.To);
 
-            m_GameBoard.CheckIfPieceInKingPositionAndPromote(i_PieceToMove);
+            CheckIfPieceInKingPositionAndPromote(i_PieceToMove);
 
             if (i_MoveToExecute.IsEatingMove)
             {
@@ -112,6 +119,16 @@ namespace Ex05.GameLogic
                 m_GameBoard.RemovePieceFromBoard(eatenPiece);
                 m_NextPlayer.RemovePieceFromList(eatenPiece);
                 OnPieceEaten(i_MoveToExecute.EatenPieceLocation);
+            }
+        }
+
+
+        public void CheckIfPieceInKingPositionAndPromote(Piece i_Piece)
+        {
+            if (i_Piece.Color == Enums.ePieceColor.Black && i_Piece.Position.X == 0 || i_Piece.Color == Enums.ePieceColor.Red && i_Piece.Position.X == m_GameBoard.BoardSize - 1)
+            {
+                i_Piece.PromoteToKing();
+                OnBecameKing(i_Piece.Position, i_Piece.Color);
             }
         }
 

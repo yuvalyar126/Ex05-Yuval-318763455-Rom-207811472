@@ -67,6 +67,18 @@ namespace Ex05.GameLogic
             }
         }
 
+        public ePieceColor Color
+        {
+            get
+            {
+                return m_Color;
+            }
+            set
+            {
+                m_Color = value;
+            }
+        }
+
         public void PromoteToKing()
         {
             m_IsKing = true;

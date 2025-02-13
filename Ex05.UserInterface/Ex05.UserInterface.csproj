@@ -129,5 +129,14 @@
   <ItemGroup>
     <None Include="Resources\צילום_מסך_2025-02-12_215051-removebg-preview.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\צילום מסך 2025-02-12 215126.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\צילום_מסך_2025-02-12_215059-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\צילום_מסך_2025-02-12_215126-removebg-preview.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
