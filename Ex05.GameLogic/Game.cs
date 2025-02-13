@@ -174,7 +174,7 @@ namespace Ex05.GameLogic
 
             if (currentMove != null)
             {
-                makeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
+                MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
             }
 
             return currentMove;
@@ -243,7 +243,7 @@ namespace Ex05.GameLogic
             return currentMove;
         }
 
-        private void makeMove(Move io_MoveToPlay, Piece io_PieceToMove, out string o_EndGameMessage)
+        public void MakeMove(Move io_MoveToPlay, Piece io_PieceToMove, out string o_EndGameMessage)
         {
             executeMove(io_MoveToPlay, io_PieceToMove);
             checkEndGame(out o_EndGameMessage, false);

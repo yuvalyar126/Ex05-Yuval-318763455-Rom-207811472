@@ -53,7 +53,7 @@ namespace Ex05.UserInterface
             Enums.eGameMode gameMode = r_FormGameSettings.IsPlayer2Computer ? Enums.eGameMode.PlayerAgainstComputer : Enums.eGameMode.PlayerAgainstPlayer;
 
             m_GameManager = new GameManager(gameMode, player1Name, player2Name, boardSize);
-            m_GameManager.MoveExecuted += move_piece; 
+            //m_GameManager.MoveExecuted += move_piece; 
             //game.GameOver += game_GameOver;
             //game.TurnChanged += game_TurnChanged;
             //game.ScoreChanged += game_ScoreChanged;
@@ -113,27 +113,34 @@ namespace Ex05.UserInterface
             i_PictureBoxPiece.Click += new EventHandler(this.piece_Clicked);
         }
 
+        //private void piece_Clicked(object sender, EventArgs e)
+        //{
+        //    PictureBoxPiece selectedPiece = sender as PictureBoxPiece;
+
+        //    if (selectedPiece == null)
+        //        return;
+
+        //    if (m_SelectedPiece != null)
+        //    {
+        //        m_SelectedPiece.BackColor = Color.White; // Reset previous selection
+
+        //        if (m_SelectedPiece == selectedPiece) // Deselect if clicking the same piece again
+        //        {
+        //            m_SelectedPiece = null;
+        //            return;
+        //        }
+        //    }
+
+        //    // Select new piece
+        //    m_SelectedPiece = selectedPiece;
+        //    m_SelectedPiece.BackColor = Color.DodgerBlue;
+        //}
+
+
+
         private void piece_Clicked(object sender, EventArgs e)
         {
-            PictureBoxPiece selectedPiece = sender as PictureBoxPiece;
-
-            if (selectedPiece == null)
-                return;
-
-            if (m_SelectedPiece != null)
-            {
-                m_SelectedPiece.BackColor = Color.White; // Reset previous selection
-
-                if (m_SelectedPiece == selectedPiece) // Deselect if clicking the same piece again
-                {
-                    m_SelectedPiece = null;
-                    return;
-                }
-            }
-
-            // Select new piece
-            m_SelectedPiece = selectedPiece;
-            m_SelectedPiece.BackColor = Color.DodgerBlue;
+            markSelectedPiece(sender);
         }
 
 
@@ -147,22 +154,17 @@ namespace Ex05.UserInterface
                 return; // Ensure the clicked object is a button cell
 
             // Get piece position
-            // Convert System.Drawing.Point to Ex05.GameLogic.Point
-            Ex05.GameLogic.Point from = new Ex05.GameLogic.Point(m_SelectedPiece.CurrentCell.Location.X,
-                                                                  m_SelectedPiece.CurrentCell.Location.Y);
-
-            Ex05.GameLogic.Point to = targetCell.LocationInBoard;
-            
+            int row = targetCell.LocationInBoard.Y;
+            int column = targetCell.LocationInBoard.X;
 
             // Attempt to make the move
-            if (m_GameManager.Game.)) // Replace with actual move logic
+            if (true) // Replace with actual move logic
             {
-                m_GameManager.MakeMove(from, to);
-                UpdateBoardUI();
+              MoveSelectedPiece(row, column);
             }
 
             // Deselect piece after move attempt
-            m_SelectedPiece.BackColor = Color.White;
+            //m_SelectedPiece.BackColor = Color.White;
             m_SelectedPiece = null;
         }
 
@@ -192,16 +194,19 @@ namespace Ex05.UserInterface
                     else
                     {
                         m_ButtonCells[row, column].BackColor = System.Drawing.Color.White;
+                        m_ButtonCells[row, column].Click += new EventHandler(this.buttonCell_Clicked);
                     }
 
                     this.m_ButtonCells[row, column].Location = new System.Drawing.Point(xCoordinate, yCoordinate);
                     this.m_ButtonCells[row, column].Size = new System.Drawing.Size((int)eButtonData.ButtonSize, (int)eButtonData.ButtonSize);
                     this.m_ButtonCells[row, column].FlatStyle = System.Windows.Forms.FlatStyle.Flat;
                     xCoordinate += (int)eButtonData.ButtonSize;
+                    
                 }
 
                 yCoordinate += (int)eButtonData.ButtonSize;
                 xCoordinate = (int)eButtonData.ButtonXStartPosition;
+                
             }
         }
 
@@ -243,15 +248,76 @@ namespace Ex05.UserInterface
             }
         }
 
-        private void move_piece(Move i_move)
-        {
-            updatePiecePosition(i_move.From, i_move.To);
-        }
+        //private void move_piece(Move i_move)
+        //{
+        //    updatePiecePosition(i_move.From, i_move.To);
+        //}
 
-        private void updatePiecePosition(Ex05.GameLogic.Point i_From, Ex05.GameLogic.Point i_To)
+        private void updatePiecePosition(System.Drawing.Point i_From, System.Drawing.Point i_To)
         {
             m_ButtonCells[i_To.X, i_To.Y].Image = m_ButtonCells[i_From.X, i_From.Y].Image;
             m_ButtonCells[i_From.X, i_From.Y].Image = null;
+        }
+
+
+
+
+        private void removePieceOnSquare(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumm, PictureBoxPiece[] i_Pieces)
+        {
+            ButtonCell currentButtonCell = m_ButtonCells[i_CurrentCellPieceRow, i_CurrentCellPieceColumm];
+
+            // scan array and locate the piece whose cell Point are received in function:
+            for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
+            {
+                if (i_Pieces[i] != null)
+                {
+                    // Check if the current piece it what we looking for
+                    if (i_Pieces[i].CurrentCell == currentButtonCell)
+                    {
+                        Controls.Remove(i_Pieces[i]);
+                        i_Pieces[i] = null;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        private void markSelectedPiece(object i_PieceSender)
+        {
+            PictureBoxPiece selectedPiece = i_PieceSender as PictureBoxPiece;
+
+            if (m_SelectedPiece!=null)
+            {
+                m_SelectedPiece.BackColor = Color.White; // Return the color of previous selected piece to white.
+
+                if (m_SelectedPiece != selectedPiece)
+                {
+                    m_SelectedPiece = selectedPiece;        // Now m_CurrentSelectedPiece is selectedPiece.
+                    m_SelectedPiece.BackColor = Color.DodgerBlue;
+                }
+                else
+                {
+                    m_SelectedPiece = null;  // If we select this piece before it means that now we cancel the select.
+                }
+            }
+            else
+            {
+                if (selectedPiece != null)
+                {
+                    m_SelectedPiece = selectedPiece;
+                    m_SelectedPiece.BackColor = Color.DodgerBlue;
+                }
+            }
+        }
+
+        public void MoveSelectedPiece(int i_RowOfNewSquare, int i_ColumnOfNewSquare)
+        {
+            if (m_SelectedPiece != null)
+            {
+                m_SelectedPiece.CurrentCell = m_ButtonCells[i_RowOfNewSquare, i_ColumnOfNewSquare]; 
+                markSelectedPiece(m_SelectedPiece);
+            }
         }
 
     }
