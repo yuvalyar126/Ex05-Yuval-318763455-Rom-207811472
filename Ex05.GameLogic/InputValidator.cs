@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ex05.Enums;
+using System;
 
 namespace Ex05.GameLogic
 {
@@ -63,9 +64,9 @@ namespace Ex05.GameLogic
             return isBoardSizeValid;
         }
 
-        public static bool IsGameModeValid(string i_UserInput, out eGameModeOptions o_GameMode)
+        public static bool IsGameModeValid(string i_UserInput, out eGameMode o_GameMode)
         {
-            bool isValid = Enum.TryParse(i_UserInput, out o_GameMode) && Enum.IsDefined(typeof(eGameModeOptions), o_GameMode);
+            bool isValid = Enum.TryParse(i_UserInput, out o_GameMode) && Enum.IsDefined(typeof(eGameMode), o_GameMode);
 
             if (!isValid)
             {

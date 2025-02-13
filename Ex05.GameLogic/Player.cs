@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ex05.Enums;
+using System.Collections.Generic;
 
 namespace Ex05.GameLogic
 {
@@ -11,18 +12,20 @@ namespace Ex05.GameLogic
     public class Player
     {
         private readonly string r_PlayerName;
-        private readonly ePieceType r_PlayerPieceSymbol;
+        private readonly ePieceType r_PlayerPieceType;
+        private readonly ePieceColor r_PlayerColor;
         private int m_Points = 0;
         private bool m_IsComputer;
         private bool m_MustEat = false;
         private List<Piece> m_PlayerPieces;
         
 
-        public Player(string i_PlayerName, ePieceType i_PlayerCoinSymbol, bool i_IsComputer)
+        public Player(string i_PlayerName, ePieceType i_PlayerPieceType, bool i_IsComputer, ePieceColor i_PlayerPieceColor)
         {
             r_PlayerName = i_PlayerName;
-            r_PlayerPieceSymbol = i_PlayerCoinSymbol;
+            r_PlayerPieceType = i_PlayerPieceType;
             m_IsComputer = i_IsComputer;
+            r_PlayerColor = i_PlayerPieceColor;
         }
 
         public string PlayerName
@@ -33,11 +36,11 @@ namespace Ex05.GameLogic
             }
         }
 
-        public ePieceType PlayerPieceSymbol
+        public ePieceType PlayerPieceType
         {
             get
             {
-                return r_PlayerPieceSymbol;
+                return r_PlayerPieceType;
             }
         }
 
@@ -85,6 +88,14 @@ namespace Ex05.GameLogic
             get
             {
                 return m_IsComputer;
+            }
+        }
+
+        public ePieceColor PlayerColor
+        {
+            get
+            {
+                return r_PlayerColor;
             }
         }
 

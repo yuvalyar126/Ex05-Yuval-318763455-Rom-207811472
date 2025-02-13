@@ -9,19 +9,250 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Ex05.GameLogic.GameBoard;
+using System.Reflection;
 
 namespace Ex05.UserInterface
 {
     public partial class FormCheckersGame : Form
     {
-        private PictureBox m_SelectedPiece;
+        private enum eButtonData
+        {
+            ButtonSize = 50,
+            ButtonXStartPosition = 13,
+            ButtonYStartPosition = 50,
+        }
 
+        private readonly FormGameSettings r_FormGameSettings = new FormGameSettings();
+        private PictureBoxPiece m_SelectedPiece;
+        private GameManager m_GameManager;
+        private int m_BoardSize;
+        
 
         public FormCheckersGame()
         {
             InitializeComponent();
         }
 
+        public void ShowDialog()
+        {
+            r_FormGameSettings.ShowDialog();
+
+            if(r_FormGameSettings.DialogResult == DialogResult.OK)
+            {
+                initializeGame();
+            }
+        }
+
+        public void initializeGame()
+        {
+            initForm();
+            int boardSize = (int)r_FormGameSettings.BoardSize;
+            string player1Name = r_FormGameSettings.Player1Name;
+            string player2Name = r_FormGameSettings.Player2Name;
+            Enums.eGameMode gameMode = r_FormGameSettings.IsPlayer2Computer ? Enums.eGameMode.PlayerAgainstComputer : Enums.eGameMode.PlayerAgainstPlayer;
+
+            m_GameManager = new GameManager(gameMode, player1Name, player2Name, boardSize);
+            m_GameManager.MoveExecuted += move_piece; 
+            //game.GameOver += game_GameOver;
+            //game.TurnChanged += game_TurnChanged;
+            //game.ScoreChanged += game_ScoreChanged;
+            //game.BoardChanged += game_BoardChanged;
+            //game.InitializeGame();
+
+
+            base.ShowDialog();
+        }
+
+        
+
+        public void initForm()
+        {
+            m_BoardSize = (int)r_FormGameSettings.BoardSize;
+            m_NumberOfPiecesForEachPlayer = (m_BoardSize / 2) * ((m_BoardSize / 2) - 1);
+            m_ButtonCells = new ButtonCell[m_BoardSize, m_BoardSize];
+            m_WhitePiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
+            m_BlackPiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
+
+
+            initPlayerControl();
+            initPieces();
+            initButtonsBoard(m_BoardSize);
+            initPiecesOnBoard();
+            resizeClient();
+            addControlsButtonCellToForm();
+            playerControl1.SetTurn(true);
+        }
+
+        private void initPlayerControl()
+        {
+            playerControl1.PlayerName = r_FormGameSettings.Player1Name;
+            playerControl2.PlayerName = r_FormGameSettings.Player2Name;
+        }
+
+        private void initPieces()
+        {
+            for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
+            {
+                m_WhitePiecesPictureBox[i] = new PictureBoxPiece(Enums.ePieceColor.Red);
+                m_WhitePiecesPictureBox[i].Image = Properties.Resources.red_piece;
+                initPictureBoxPiece(m_WhitePiecesPictureBox[i]);
+
+                m_BlackPiecesPictureBox[i] = new PictureBoxPiece(Enums.ePieceColor.Black);
+                m_BlackPiecesPictureBox[i].Image = Properties.Resources.black_piece;
+                initPictureBoxPiece(m_BlackPiecesPictureBox[i]);
+            }
+        }
+
+        private void initPictureBoxPiece(PictureBoxPiece i_PictureBoxPiece)
+        {
+            i_PictureBoxPiece.Size = new System.Drawing.Size(50, 50);
+            i_PictureBoxPiece.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            i_PictureBoxPiece.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(i_PictureBoxPiece);
+            i_PictureBoxPiece.Click += new EventHandler(this.piece_Clicked);
+        }
+
+        private void piece_Clicked(object sender, EventArgs e)
+        {
+            PictureBoxPiece selectedPiece = sender as PictureBoxPiece;
+
+            if (selectedPiece == null)
+                return;
+
+            if (m_SelectedPiece != null)
+            {
+                m_SelectedPiece.BackColor = Color.White; // Reset previous selection
+
+                if (m_SelectedPiece == selectedPiece) // Deselect if clicking the same piece again
+                {
+                    m_SelectedPiece = null;
+                    return;
+                }
+            }
+
+            // Select new piece
+            m_SelectedPiece = selectedPiece;
+            m_SelectedPiece.BackColor = Color.DodgerBlue;
+        }
+
+
+        private void buttonCell_Clicked(object sender, EventArgs e)
+        {
+            if (m_SelectedPiece == null)
+                return; // No piece selected, do nothing
+
+            ButtonCell targetCell = sender as ButtonCell;
+            if (targetCell == null)
+                return; // Ensure the clicked object is a button cell
+
+            // Get piece position
+            // Convert System.Drawing.Point to Ex05.GameLogic.Point
+            Ex05.GameLogic.Point from = new Ex05.GameLogic.Point(m_SelectedPiece.CurrentCell.Location.X,
+                                                                  m_SelectedPiece.CurrentCell.Location.Y);
+
+            Ex05.GameLogic.Point to = targetCell.LocationInBoard;
+            
+
+            // Attempt to make the move
+            if (m_GameManager.Game.)) // Replace with actual move logic
+            {
+                m_GameManager.MakeMove(from, to);
+                UpdateBoardUI();
+            }
+
+            // Deselect piece after move attempt
+            m_SelectedPiece.BackColor = Color.White;
+            m_SelectedPiece = null;
+        }
+
+
+
+
+
+        private void initButtonsBoard(int i_BoardSize)
+        {
+            // Point for the graphic location:
+            int xCoordinate = (int)eButtonData.ButtonXStartPosition;
+            int yCoordinate = (int)eButtonData.ButtonYStartPosition;
+
+            for (byte row = 0; row < m_BoardSize; row++)
+            {
+                for (byte column = 0; column < m_BoardSize; column++)
+                {
+                    m_ButtonCells[row, column] = new ButtonCell(row, column);
+                    m_ButtonCells[row, column].LocationInBoard = new Ex05.GameLogic.Point(column, row);
+
+                    // Check if the current ButtonCell is black or white
+                    if (((column % 2) == 0 && (row % 2) == 0) || ((column % 2) != 0 && (row % 2) != 0))
+                    {
+                        m_ButtonCells[row, column].BackColor = System.Drawing.Color.Black;
+                        m_ButtonCells[row, column].Enabled = false;
+                    }
+                    else
+                    {
+                        m_ButtonCells[row, column].BackColor = System.Drawing.Color.White;
+                    }
+
+                    this.m_ButtonCells[row, column].Location = new System.Drawing.Point(xCoordinate, yCoordinate);
+                    this.m_ButtonCells[row, column].Size = new System.Drawing.Size((int)eButtonData.ButtonSize, (int)eButtonData.ButtonSize);
+                    this.m_ButtonCells[row, column].FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                    xCoordinate += (int)eButtonData.ButtonSize;
+                }
+
+                yCoordinate += (int)eButtonData.ButtonSize;
+                xCoordinate = (int)eButtonData.ButtonXStartPosition;
+            }
+        }
+
+        private void initPiecesOnBoard()
+        {
+            initOneSidePiecesOnBoard(0, (m_BoardSize / 2) - 1, m_WhitePiecesPictureBox);
+            initOneSidePiecesOnBoard((m_BoardSize / 2) + 1, m_BoardSize, m_BlackPiecesPictureBox);
+        }
+
+        private void initOneSidePiecesOnBoard(int i_StartRow, int i_EndRow, PictureBoxPiece[] i_Pieces)
+        {
+            int index = 0;
+
+            for (int row = i_StartRow; row < i_EndRow; row++)
+            {
+                int startColumn = row % 2 == 0 ? 1 : 0;
+
+                for (int column = startColumn; column < m_BoardSize; column += 2)
+                {
+                    i_Pieces[index].CurrentCell = m_ButtonCells[row, column];
+                    i_Pieces[index].BringToFront();
+                    index++;
+                }
+            }
+        }
+
+        private void resizeClient()
+        {
+            int clientSizeWidth = ((int)eButtonData.ButtonSize * m_BoardSize) + (2 * (int)eButtonData.ButtonXStartPosition);
+            int clientSizeHeight = ((int)eButtonData.ButtonSize * m_BoardSize) + (int)eButtonData.ButtonYStartPosition + (int)eButtonData.ButtonXStartPosition;
+            ClientSize = new System.Drawing.Size(clientSizeWidth, clientSizeHeight);
+        }
+
+        private void addControlsButtonCellToForm()
+        {
+            foreach (ButtonCell square in m_ButtonCells)
+            {
+                this.Controls.Add(square);
+            }
+        }
+
+        private void move_piece(Move i_move)
+        {
+            updatePiecePosition(i_move.From, i_move.To);
+        }
+
+        private void updatePiecePosition(Ex05.GameLogic.Point i_From, Ex05.GameLogic.Point i_To)
+        {
+            m_ButtonCells[i_To.X, i_To.Y].Image = m_ButtonCells[i_From.X, i_From.Y].Image;
+            m_ButtonCells[i_From.X, i_From.Y].Image = null;
+        }
 
     }
 }

@@ -224,7 +224,7 @@ namespace Ex05.GameLogic
 
                 currentMove = new Move(moveString);
                 Piece movingPiece = m_GameBoard.GetPieceInCellByPosition(currentMove.From);
-                if (movingPiece == null || movingPiece.IsOpponentPiece(m_CurrentPlayer.PlayerPieceSymbol))
+                if (movingPiece == null || movingPiece.IsOpponentPiece(m_CurrentPlayer.PlayerPieceType))
                 {
                     UserInterface.PrintInvalidMoveMessage();
                     continue;

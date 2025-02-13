@@ -1,19 +1,49 @@
-﻿namespace Ex05.GameLogic
+﻿using Ex05.Enums;
+using System;
+
+namespace Ex05.GameLogic
 {
     public class GameManager
     {
         private readonly int r_BoardSize;
         private readonly Player r_PlayerOne;
         private readonly Player r_PlayerTwo;
+        private Game m_Game = null;
 
-        public GameManager(eGameModeOptions i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
+        public event Action<Move> MoveExecuted;
+
+        public event Action<bool> ActivePlayerChanged;
+
+        public GameManager(eGameMode i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
         {
-            bool isComputer = i_GameMode == eGameModeOptions.PlayerVsComputer;
+            bool isComputer = i_GameMode == eGameMode.PlayerAgainstComputer;
 
             r_BoardSize = i_BoardSize;
-            r_PlayerOne = new Player(i_FirstPlayerName, ePieceType.X, false);
-            r_PlayerTwo = new Player(i_SecondPlayerName, ePieceType.O, isComputer);
+            r_PlayerOne = new Player(i_FirstPlayerName, ePieceType.X, false, ePieceColor.Black);
+            r_PlayerTwo = new Player(i_SecondPlayerName, ePieceType.O, isComputer, ePieceColor.Red);
         }
+
+
+        public Game Game
+        {
+            get
+            {
+                return m_Game;
+            }
+        }
+
+
+        protected virtual void OnMoveExecuted(Move i_Move)
+        {
+            MoveExecuted?.Invoke(i_Move);
+        }
+
+
+        //protected virtual void OnActivePlayerChanged()
+        //{
+        //    ActivePlayerChanged?.Invoke(r_PlayerOne.IsActive);
+        //}
+
 
         public void playNewGame()
         {
@@ -27,28 +57,25 @@
         private eGameStatusOptions gameLoop()
         {
             eGameStatusOptions gameStatus = eGameStatusOptions.Running;
-            Game game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
+            m_Game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
             Move lastMove = null;
             string endGameMessage = string.Empty;
 
-            while (gameStatus == eGameStatusOptions.Running)
+            if (gameStatus == eGameStatusOptions.Running)
             {
                 
-                if (!game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
+                if (!m_Game.CurrentPlayer.IsComputer || UserInterface.ShowComputerMove())
                 {
-                    UserInterface.PrintBoard(game.GameBoard);
-                    if (lastMove != null)
-                    {
-                        UserInterface.PrintMove(lastMove, game);
-                    }
+                    lastMove = m_Game.PlayTurn(out endGameMessage);
+                    OnMoveExecuted(lastMove);
+                    gameStatus = m_Game.Status;
                 }
 
-                lastMove = game.PlayTurn(out endGameMessage);
-                gameStatus = game.Status;
+                
             }
 
             UserInterface.PrintEndGameMessage(endGameMessage);
-            gameStatus = UserInterface.AskForNewGame(game);
+            gameStatus = UserInterface.AskForNewGame(m_Game);
             return gameStatus;
         }
 

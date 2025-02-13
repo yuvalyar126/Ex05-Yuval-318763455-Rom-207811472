@@ -12,42 +12,53 @@ namespace Ex05.UserInterface
 {
     public partial class PlayerControl : UserControl
     {
-        private string playerName;
-        private int score;
-        private bool isCurrentTurn;
+        //private string m_PlayerName;
+        //private int m_Score;
+        private bool m_IsCurrentTurn;
 
         public PlayerControl()
         {
             InitializeComponent();
         }
 
-        public void InitializePlayer(string name)
+        public string PlayerName
         {
-            playerName = name;
-            score = 0;
-            isCurrentTurn = false;
-            UpdateUI();
+            get
+            {
+                return lblPlayerName.Text;
+            }
+            set
+            {
+                lblPlayerName.Text = value + ":";
+            }
+        }
+        public string PlayerScore
+        {
+            get
+            {
+                return lblScore.Text;
+            }
+
+            set
+            {
+                lblScore.Text = value;
+            }
         }
 
-        public void SetScore(int newScore)
-        {
-            score = newScore;
-            lblScore.Text = $"Score: {score}";
-        }
+     
 
         public void SetTurn(bool isTurn)
         {
-            isCurrentTurn = isTurn;
+            m_IsCurrentTurn = isTurn;
             this.BackColor = isTurn ? Color.LightBlue : SystemColors.Control;
             lblPlayerName.Font = isTurn ? new Font(lblPlayerName.Font, FontStyle.Bold) : new Font(lblPlayerName.Font, FontStyle.Regular);
         }
 
-        private void UpdateUI()
+        public void FinishTurn()
         {
-            lblPlayerName.Text = playerName;
-            lblScore.Text = $"Score: {score}";
-            SetTurn(isCurrentTurn);
+            m_IsCurrentTurn = false;
+            this.BackColor = SystemColors.Control;
+            lblPlayerName.Font = new Font(lblPlayerName.Font, FontStyle.Regular);
         }
-
     }
 }

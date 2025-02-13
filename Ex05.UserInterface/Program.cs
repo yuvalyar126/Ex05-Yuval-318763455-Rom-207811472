@@ -14,9 +14,9 @@ namespace Ex05.UserInterface
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-           
+            FormCheckersGame gameForm = new FormCheckersGame();
+            gameForm.ShowDialog();
+
         }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ex05.Enums
 {
-    public enum ePieceColor
+    public enum eGameMode
     {
-        Red,
-        Black,
+        PlayerAgainstPlayer = 1,
+        PlayerAgainstComputer,
     }
 }

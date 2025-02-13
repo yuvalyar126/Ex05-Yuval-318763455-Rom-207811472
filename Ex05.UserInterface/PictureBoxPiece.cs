@@ -12,9 +12,9 @@ namespace Ex05.UserInterface
     public class PictureBoxPiece : PictureBox
     {
         private ButtonCell m_CurrentCell = null;
-        private ePieceColor m_PieceColor;
+        private Enums.ePieceColor m_PieceColor;
 
-        public PictureBoxPiece(ePieceColor i_PieceColor)
+        public PictureBoxPiece(Enums.ePieceColor i_PieceColor)
         {
             m_PieceColor = i_PieceColor;
         }
@@ -34,7 +34,7 @@ namespace Ex05.UserInterface
             }
         }
 
-        public ePieceColor PieceColor
+        public Enums.ePieceColor PieceColor
         {
             get
             {

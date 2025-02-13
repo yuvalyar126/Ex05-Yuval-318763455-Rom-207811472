@@ -1,13 +1,8 @@
-﻿using System;
+﻿using Ex05.Enums;
+using System;
 
 namespace Ex05.GameLogic
 {
-    public enum eGameModeOptions
-    {
-        PlayerVsComputer = 1,
-        PlayerVsPlayer = 2
-    }
-
     public class UserInterface
     {
         public static string GetPlayerNameFromUser(ePlayerType i_PlayerType)
@@ -31,10 +26,10 @@ namespace Ex05.GameLogic
         {
             string firstPlayerName = GetPlayerNameFromUser(ePlayerType.FirstPlayer);
             int boardSize = GetBoardSizeFromUser();
-            eGameModeOptions gameMode = GetGameModeFromUser();
+            eGameMode gameMode = GetGameModeFromUser();
             string secondPlayerName;
 
-            if (gameMode == eGameModeOptions.PlayerVsPlayer)
+            if (gameMode == eGameMode.PlayerAgainstPlayer)
             {
                 secondPlayerName = GetPlayerNameFromUser(ePlayerType.SecondPlayer);
             }
@@ -62,9 +57,9 @@ namespace Ex05.GameLogic
             return boardSize;
         }
 
-        public static eGameModeOptions GetGameModeFromUser()
+        public static eGameMode GetGameModeFromUser()
         {
-            eGameModeOptions gameMode;
+            eGameMode gameMode;
             bool isValid;
 
             do
@@ -154,12 +149,12 @@ namespace Ex05.GameLogic
             string from = string.Format("{0}{1}", (char)(i_Move.From.X + 'A'), (char)(i_Move.From.Y + 'a'));
             string to = string.Format("{0}{1}", (char)(i_Move.To.X + 'A'), (char)(i_Move.To.Y + 'a'));
             string nameToPrint = i_Game.NextPlayer.PlayerName;
-            ePieceType typeToPrint = i_Game.NextPlayer.PlayerPieceSymbol;
+            ePieceType typeToPrint = i_Game.NextPlayer.PlayerPieceType;
 
             if (i_Move.IsEatingMove && i_Game.CurrentPlayer.MustEatAgain)
             {
                 nameToPrint = i_Game.CurrentPlayer.PlayerName;
-                typeToPrint = i_Game.CurrentPlayer.PlayerPieceSymbol;
+                typeToPrint = i_Game.CurrentPlayer.PlayerPieceType;
             }
 
             Console.WriteLine("{0}'s move was ({1}): {2}>{3}", nameToPrint, typeToPrint, from, to);
@@ -189,7 +184,7 @@ namespace Ex05.GameLogic
 
         public static void PrintCurrentPlayerTurnMessage(Player i_CurrentPlayer)
         {
-            Console.WriteLine("{0}'s turn ({1}): ", i_CurrentPlayer.PlayerName, i_CurrentPlayer.PlayerPieceSymbol);
+            Console.WriteLine("{0}'s turn ({1}): ", i_CurrentPlayer.PlayerName, i_CurrentPlayer.PlayerPieceType);
         }
 
         public static string GetMoveStringFromUser(Player i_CurrentPlayer)

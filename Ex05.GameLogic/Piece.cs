@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ex05.Enums;
+using System.Collections.Generic;
 
 namespace Ex05.GameLogic
 {
@@ -19,8 +20,10 @@ namespace Ex05.GameLogic
     public class Piece
     {
         private ePieceType m_Type;
+        private ePieceColor m_Color;
         private bool m_IsKing = false;
         private Point m_Position;
+
 
         public Piece(ePieceType type, int row, int column)
         {

@@ -71,9 +71,9 @@ namespace Ex05.UserInterface
         }
 
     
-        public bool CheckBoxPlayer2Checked
+        public bool IsPlayer2Computer
         {
-            get { return checkBoxPlayer2.Checked; }
+            get { return !checkBoxPlayer2.Checked; }
         }
 
         private void checkBoxPlayer2_CheckedChanged(object sender, EventArgs e)
