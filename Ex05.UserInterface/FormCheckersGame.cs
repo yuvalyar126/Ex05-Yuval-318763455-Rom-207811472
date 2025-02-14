@@ -1,16 +1,8 @@
-﻿using Ex05.GameLogic;
-using Ex05.Enums;
+﻿using Ex05.Enums;
+using Ex05.GameLogic;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Ex05.GameLogic.GameBoard;
-using System.Reflection;
 
 namespace Ex05.UserInterface
 {
@@ -59,6 +51,7 @@ namespace Ex05.UserInterface
             m_GameManager.Game.ActivePlayerChanged += Game_ActivePlayerChanged;
             m_GameManager.Game.PieceEaten += Game_PieceEaten;
             m_GameManager.Game.BecameKing += Game_BecameKing;
+            m_GameManager.Game.ComputerPieceSelected+= Game_ComputerPieceSelected;
 
 
 
@@ -69,6 +62,23 @@ namespace Ex05.UserInterface
 
 
             base.ShowDialog();
+        }
+
+        private void Game_ComputerPieceSelected(GameLogic.Point i_SelectedComputerPieceLocation)
+        {
+            for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
+            {
+                if (playerControl2.IsPlayingNow)
+                {
+                    if (m_RedPiecesPictureBox[i] != null)
+                    {
+                        if (m_RedPiecesPictureBox[i].CurrentCell.LocationInBoard.X == i_SelectedComputerPieceLocation.X && m_RedPiecesPictureBox[i].CurrentCell.LocationInBoard.Y == i_SelectedComputerPieceLocation.Y) 
+                        {
+                            m_SelectedPiece = m_RedPiecesPictureBox[i];
+                        }
+                    }
+                }
+            }
         }
 
         private void Game_BecameKing(GameLogic.Point i_KingLocation, ePieceColor i_kingColor)

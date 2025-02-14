@@ -19,6 +19,8 @@ namespace Ex05.GameLogic
         public event Action ActivePlayerChanged;
         public event Action <Point> PieceEaten;
         public event Action <Point, Enums.ePieceColor> BecameKing;
+        public event Action <Point> ComputerPieceSelected;
+        
 
 
 
@@ -49,6 +51,11 @@ namespace Ex05.GameLogic
         protected virtual void OnBecameKing(Point i_NewKingLocation, ePieceColor i_KingColor)
         {
             BecameKing?.Invoke(i_NewKingLocation, i_KingColor);
+        }
+
+        protected virtual void OnComputerPieceSelected(Point i_SelectedPieceLocation)
+        {
+            ComputerPieceSelected?.Invoke(i_SelectedPieceLocation);
         }
 
 
@@ -235,6 +242,7 @@ namespace Ex05.GameLogic
             if (CurrentPlayer.IsComputer)
             {
                 currentMove = getComputerMove();
+                OnComputerPieceSelected(currentMove.From);
                 MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
 
             }
