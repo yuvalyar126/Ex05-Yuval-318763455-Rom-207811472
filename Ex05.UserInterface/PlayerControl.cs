@@ -53,10 +53,6 @@ namespace Ex05.UserInterface
             }
         }
 
-       
-
-
-
         public void SetTurn(bool isTurn)
         {
             m_IsPlayingNow = isTurn;

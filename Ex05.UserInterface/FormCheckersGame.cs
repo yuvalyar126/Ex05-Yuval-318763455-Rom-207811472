@@ -8,20 +8,19 @@ namespace Ex05.UserInterface
 {
     public partial class FormCheckersGame : Form
     {
+
         private enum eButtonData
         {
+            
+            ButtonStartPositionAxisX = 13,
+            ButtonStartPositionAxisY = 50,
             ButtonSize = 50,
-            ButtonXStartPosition = 13,
-            ButtonYStartPosition = 50,
         }
 
         private readonly FormGameSettings r_FormGameSettings = new FormGameSettings();
         private PictureBoxPiece m_SelectedPiece;
         private GameManager m_GameManager;
         private int m_BoardSize;
-
-
-
 
         public FormCheckersGame()
         {
@@ -34,34 +33,45 @@ namespace Ex05.UserInterface
 
             if (r_FormGameSettings.DialogResult == DialogResult.OK)
             {
-                initializeGame();
+                initStartingGame();
             }
         }
 
-        public void initializeGame()
+        public void initNewGame(int i_Player1Score, int i_Player2Score)
         {
-            initForm();
+            initForm(i_Player1Score, i_Player2Score);
             int boardSize = (int)r_FormGameSettings.BoardSize;
             string player1Name = r_FormGameSettings.Player1Name;
             string player2Name = r_FormGameSettings.Player2Name;
+
             Enums.eGameMode gameMode = r_FormGameSettings.IsPlayer2Computer ? Enums.eGameMode.PlayerAgainstComputer : Enums.eGameMode.PlayerAgainstPlayer;
 
             m_GameManager = new GameManager(gameMode, player1Name, player2Name, boardSize);
+            
             m_GameManager.Game.MoveExecuted += Game_MoveExecuted;
             m_GameManager.Game.ActivePlayerChanged += Game_ActivePlayerChanged;
             m_GameManager.Game.PieceEaten += Game_PieceEaten;
             m_GameManager.Game.BecameKing += Game_BecameKing;
             m_GameManager.Game.ComputerPieceSelected+= Game_ComputerPieceSelected;
+            m_GameManager.Game.ScoreAdded+= Game_ScoreAdded;
+        }
 
-
-
-            //game.GameOver += game_GameOver;
-            //game.ScoreChanged += game_ScoreChanged;
-            //game.BoardChanged += game_BoardChanged;
-            //game.InitializeGame();
-
-
+        private void initStartingGame()
+        {
+            initNewGame(0, 0);
             base.ShowDialog();
+        }
+
+        private void Game_ScoreAdded(int i_ScoreToAdd, string i_WinnerName)
+        {
+            if (playerControl1.PlayerName == i_WinnerName + ':')
+            {
+                playerControl1.PlayerScore = i_ScoreToAdd.ToString();
+            }
+            else
+            {
+                playerControl2.PlayerScore = i_ScoreToAdd.ToString();
+            }
         }
 
         private void Game_ComputerPieceSelected(GameLogic.Point i_SelectedComputerPieceLocation)
@@ -150,28 +160,30 @@ namespace Ex05.UserInterface
             }
         }
 
-        public void initForm()
+        public void initForm(int i_Player1Score, int i_Player2Score)
         {
             m_BoardSize = (int)r_FormGameSettings.BoardSize;
             m_NumberOfPiecesForEachPlayer = (m_BoardSize / 2) * ((m_BoardSize / 2) - 1);
             m_ButtonCells = new ButtonCell[m_BoardSize, m_BoardSize];
             m_RedPiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
             m_BlackPiecesPictureBox = new PictureBoxPiece[m_NumberOfPiecesForEachPlayer];
-
-
-            initPlayerControl();
+            initPlayerControl(i_Player1Score, i_Player2Score);
             initPieces();
             initButtonsBoard(m_BoardSize);
             initPiecesOnBoard();
-            resizeClient();
             addControlsButtonCellToForm();
             playerControl1.SetTurn(true);
+            playerControl2.SetTurn(false);
+            resizeClient();
         }
 
-        private void initPlayerControl()
+
+        private void initPlayerControl(int i_Player1Score, int i_Player2Score)
         {
             playerControl1.PlayerName = r_FormGameSettings.Player1Name;
+            playerControl1.PlayerScore = i_Player1Score.ToString();
             playerControl2.PlayerName = r_FormGameSettings.Player2Name;
+            playerControl2.PlayerScore = i_Player2Score.ToString();
         }
 
         private void initPieces()
@@ -197,31 +209,6 @@ namespace Ex05.UserInterface
             i_PictureBoxPiece.Click += new EventHandler(this.piece_Clicked);
         }
 
-        //private void piece_Clicked(object sender, EventArgs e)
-        //{
-        //    PictureBoxPiece selectedPiece = sender as PictureBoxPiece;
-
-        //    if (selectedPiece == null)
-        //        return;
-
-        //    if (m_SelectedPiece != null)
-        //    {
-        //        m_SelectedPiece.BackColor = Color.White; // Reset previous selection
-
-        //        if (m_SelectedPiece == selectedPiece) // Deselect if clicking the same piece again
-        //        {
-        //            m_SelectedPiece = null;
-        //            return;
-        //        }
-        //    }
-
-        //    // Select new piece
-        //    m_SelectedPiece = selectedPiece;
-        //    m_SelectedPiece.BackColor = Color.DodgerBlue;
-        //}
-
-
-
         private void piece_Clicked(object sender, EventArgs e)
         {
             markSelectedPiece(sender);
@@ -231,71 +218,66 @@ namespace Ex05.UserInterface
         {
             if (r_FormGameSettings.IsPlayer2Computer && playerControl2.IsPlayingNow)
             {
-                eGameStatusOptions gameStatus = m_GameManager.GameLoop(null, null);
+                string endGameMessage = string.Empty;
+                eGameStatusOptions gameStatus = m_GameManager.GameLoop(null, null, out endGameMessage);
+                gameEndingHandler(gameStatus, endGameMessage);
             }
         }
 
+        private void gameEndingHandler(eGameStatusOptions i_GameStatus, string i_EndGameMessage)
+        {
+            string messageBoxTitle = "Damka";
+            string messageBoxText = i_EndGameMessage;
+            
+            if (i_GameStatus != eGameStatusOptions.Running)
+            {
+                DialogResult userChoice = MessageBox.Show(messageBoxText, messageBoxTitle, MessageBoxButtons.YesNo);
+                if (userChoice == DialogResult.Yes)
+                {
+                    removeAllPiecesFromBoard();
+                    m_GameManager.ResetGame();
+                    initNewGame(int.Parse(playerControl1.PlayerScore), int.Parse(playerControl2.PlayerScore));
+                    
+                }
+                else
+                {
+                    Close();
+                }
+            }
 
-        //private void buttonCell_Clicked(object sender, EventArgs e)
-        //{
-        //    if (m_SelectedPiece == null)
-        //        return; // No piece selected, do nothing
-
-        //    ButtonCell targetCell = sender as ButtonCell;
-        //    if (targetCell == null)
-        //        return; // Ensure the clicked object is a button cell
-
-        //    // Get piece position
-        //    int row = targetCell.LocationInBoard.Y;
-        //    int column = targetCell.LocationInBoard.X;
-
-        //    // Attempt to make the move
-        //    if (true) // Replace with actual move logic
-        //    {
-        //      MoveSelectedPiece(row, column);
-        //    }
-
-        //    // Deselect piece after move attempt
-        //    //m_SelectedPiece.BackColor = Color.White;
-        //    m_SelectedPiece = null;
-        //}
-
+        }
 
         private void buttonCell_Clicked(object sender, EventArgs e)
         {
 
             if (m_SelectedPiece == null)
-                return; // No piece selected, do nothing
+                return; 
 
             ButtonCell targetCell = sender as ButtonCell;
             Ex05.GameLogic.Point from = m_SelectedPiece.CurrentCell.LocationInBoard;
             Ex05.GameLogic.Point to = targetCell.LocationInBoard;
+            string endGameMessage = string.Empty;
 
             if (r_FormGameSettings.IsPlayer2Computer)
             { 
                 if(playerControl1.IsPlayingNow)
                 {
-                    eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
+                    eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to, out endGameMessage);
+                    gameEndingHandler(gameStatus, endGameMessage);
                 }
                
             }
             else
             {
-                eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to);
+                eGameStatusOptions gameStatus = m_GameManager.GameLoop(from, to, out endGameMessage);
+                gameEndingHandler(gameStatus, endGameMessage);
             }
-            
-
-
         }
-
-
-
 
         private void initButtonsBoard(int i_BoardSize)
         {
-            // Point for the graphic location:
-            int xCoordinate = (int)eButtonData.ButtonXStartPosition;
-            int yCoordinate = (int)eButtonData.ButtonYStartPosition;
+            int xCoordinate = (int)eButtonData.ButtonStartPositionAxisX;
+            int yCoordinate = (int)eButtonData.ButtonStartPositionAxisY;
 
             for (byte row = 0; row < m_BoardSize; row++)
             {
@@ -304,7 +286,6 @@ namespace Ex05.UserInterface
                     m_ButtonCells[row, column] = new ButtonCell(row, column);
                     m_ButtonCells[row, column].LocationInBoard = new Ex05.GameLogic.Point(row, column);
 
-                    // Check if the current ButtonCell is black or white
                     if (((column % 2) == 0 && (row % 2) == 0) || ((column % 2) != 0 && (row % 2) != 0))
                     {
                         m_ButtonCells[row, column].BackColor = System.Drawing.Color.Black;
@@ -324,8 +305,7 @@ namespace Ex05.UserInterface
                 }
 
                 yCoordinate += (int)eButtonData.ButtonSize;
-                xCoordinate = (int)eButtonData.ButtonXStartPosition;
-
+                xCoordinate = (int)eButtonData.ButtonStartPositionAxisX;
             }
         }
 
@@ -354,8 +334,8 @@ namespace Ex05.UserInterface
 
         private void resizeClient()
         {
-            int clientSizeWidth = ((int)eButtonData.ButtonSize * m_BoardSize) + (2 * (int)eButtonData.ButtonXStartPosition);
-            int clientSizeHeight = ((int)eButtonData.ButtonSize * m_BoardSize) + (int)eButtonData.ButtonYStartPosition + (int)eButtonData.ButtonXStartPosition;
+            int clientSizeWidth = ((int)eButtonData.ButtonSize * m_BoardSize) + (2 * (int)eButtonData.ButtonStartPositionAxisX);
+            int clientSizeHeight = ((int)eButtonData.ButtonSize * m_BoardSize) + (int)eButtonData.ButtonStartPositionAxisY + (int)eButtonData.ButtonStartPositionAxisX;
             ClientSize = new System.Drawing.Size(clientSizeWidth, clientSizeHeight);
         }
 
@@ -367,30 +347,14 @@ namespace Ex05.UserInterface
             }
         }
 
-        //private void move_piece(Move i_move)
-        //{
-        //    updatePiecePosition(i_move.From, i_move.To);
-        //}
-
-        private void updatePiecePosition(System.Drawing.Point i_From, System.Drawing.Point i_To)
-        {
-            m_ButtonCells[i_To.X, i_To.Y].Image = m_ButtonCells[i_From.X, i_From.Y].Image;
-            m_ButtonCells[i_From.X, i_From.Y].Image = null;
-        }
-
-
-
-
         private void removePieceFromBoard(int i_CurrentCellPieceRow, int i_CurrentCellPieceColumn, PictureBoxPiece[] i_Pieces)
         {
             ButtonCell currentButtonCell = m_ButtonCells[i_CurrentCellPieceRow, i_CurrentCellPieceColumn];
 
-            // scan array and locate the piece whose cell Point are received in function:
             for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
             {
                 if (i_Pieces[i] != null)
                 {
-                    // Check if the current piece it what we looking for
                     if (i_Pieces[i].CurrentCell == currentButtonCell)
                     {
                         Controls.Remove(i_Pieces[i]);
@@ -401,7 +365,23 @@ namespace Ex05.UserInterface
             }
         }
 
+        private void removeAllPiecesFromBoard()
+        {
+            for (int i = 0; i < m_NumberOfPiecesForEachPlayer; i++)
+            {
+                if (m_RedPiecesPictureBox[i] != null)
+                {
+                    Controls.Remove(m_RedPiecesPictureBox[i]);
+                    m_RedPiecesPictureBox[i] = null;
+                }
 
+                if (m_BlackPiecesPictureBox[i] != null)
+                {
+                    Controls.Remove(m_BlackPiecesPictureBox[i]);
+                    m_BlackPiecesPictureBox[i] = null;
+                }
+            }
+        }
 
         private void markSelectedPiece(object i_PieceSender)
         {
@@ -409,16 +389,16 @@ namespace Ex05.UserInterface
 
             if (m_SelectedPiece != null)
             {
-                m_SelectedPiece.BackColor = Color.White; // Return the color of previous selected piece to white.
+                m_SelectedPiece.BackColor = Color.White; 
 
                 if (m_SelectedPiece != selectedPiece)
                 {
-                    m_SelectedPiece = selectedPiece;        // Now m_CurrentSelectedPiece is selectedPiece.
+                    m_SelectedPiece = selectedPiece;    
                     m_SelectedPiece.BackColor = Color.DodgerBlue;
                 }
                 else
                 {
-                    m_SelectedPiece = null;  // If we select this piece before it means that now we cancel the select.
+                    m_SelectedPiece = null;  
                 }
             }
             else
@@ -430,8 +410,5 @@ namespace Ex05.UserInterface
                 }
             }
         }
-
-
-
     }
 }

@@ -10,18 +10,6 @@ namespace Ex05.GameLogic
         private readonly Player r_PlayerTwo;
         private Game m_Game = null;
 
-        
-        
-
-
-
-        
-
-        //protected virtual void OnCellChanged(Point i_From, Point i_To)
-        //{
-        //    CellChanged?.Invoke(i_From, i_To);
-        //}
-
         public GameManager(eGameMode i_GameMode, string i_FirstPlayerName, string i_SecondPlayerName, int i_BoardSize)
         {
             bool isComputer = i_GameMode == eGameMode.PlayerAgainstComputer;
@@ -32,7 +20,6 @@ namespace Ex05.GameLogic
             m_Game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
         }
 
-
         public Game Game
         {
             get
@@ -41,38 +28,20 @@ namespace Ex05.GameLogic
             }
         }
 
-
-       
-
-
-        //public void playNewGame()
-        //{
-        //    eGameStatusOptions gameStatus;
-        //    do
-        //    {
-        //        gameStatus = GameLoop();
-        //    } while (gameStatus != eGameStatusOptions.Exit);
-        //}
-
-
-
-
-        public eGameStatusOptions GameLoop(Point i_From, Point i_To)
+        public eGameStatusOptions GameLoop(Point i_From, Point i_To, out string o_EndGameMessage)
         {
             eGameStatusOptions gameStatus = eGameStatusOptions.Running;
             
             Move lastMove = null;
-            string endGameMessage = string.Empty;
+            o_EndGameMessage = string.Empty;
 
             if (gameStatus == eGameStatusOptions.Running)
             {
-                lastMove = m_Game.PlayTurn(i_From, i_To, out endGameMessage);
+                lastMove = m_Game.PlayTurn(i_From, i_To, out o_EndGameMessage);
                 gameStatus = m_Game.Status;
 
             }
 
-           // UserInterface.PrintEndGameMessage(endGameMessage);
-            //gameStatus = UserInterface.AskForNewGame(m_Game);
             return gameStatus;
         }
 
@@ -90,6 +59,11 @@ namespace Ex05.GameLogic
             }
 
             return winner;
+        }
+
+        public void ResetGame()
+        {
+            m_Game = new Game(r_BoardSize, r_PlayerOne, r_PlayerTwo);
         }
     }
 }

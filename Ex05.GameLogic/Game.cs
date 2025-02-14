@@ -11,8 +11,6 @@ namespace Ex05.GameLogic
         Draw,
         Exit,
     }
-
-
     public class Game
     {
         public event Action<Point, Point> MoveExecuted;
@@ -20,10 +18,8 @@ namespace Ex05.GameLogic
         public event Action <Point> PieceEaten;
         public event Action <Point, Enums.ePieceColor> BecameKing;
         public event Action <Point> ComputerPieceSelected;
-        
-
-
-
+        public event Action <int, string> ScoreAdded;
+      
         private GameBoard m_GameBoard;
         private Player m_CurrentPlayer;
         private Player m_NextPlayer;
@@ -58,6 +54,10 @@ namespace Ex05.GameLogic
             ComputerPieceSelected?.Invoke(i_SelectedPieceLocation);
         }
 
+        protected virtual void OnScoreAdded(int i_ScoreToAdd, string i_WinnerName)
+        {
+            ScoreAdded?.Invoke(i_ScoreToAdd, i_WinnerName);
+        }
 
         public Game(int i_BoardSize, Player i_CurrentPlayer, Player i_NextPlayer)
         {
@@ -177,8 +177,6 @@ namespace Ex05.GameLogic
             if (i_MoveToCheck == null)
             {
                 isLegal = false;
-               // UserInterface.PrintInvalidMoveMessage();
-
             }
             else if (m_PlayerEatingMoves.Count != 0)
             {
@@ -186,11 +184,6 @@ namespace Ex05.GameLogic
                 {
                     isLegal = true;
                 }
-                else
-                {
-                 //   UserInterface.PrintInvalidMustEatMessage();
-                }
-
             }
             else
             {
@@ -198,40 +191,10 @@ namespace Ex05.GameLogic
                 {
                     isLegal = true;
                 }
-                else
-                {
-                   // UserInterface.PrintInvalidMoveMessage();
-                }
             }
 
             return isLegal;
         }
-
-        //public Move PlayTurn(out string o_EndGameMessage)
-        //{
-        //    Move currentMove;
-        //    o_EndGameMessage = string.Empty;
-
-        //    if (m_CurrentPlayer.IsComputer)
-        //    {
-        //        currentMove = getComputerMove();
-        //    }
-        //    else
-        //    {
-
-        //        currentMove = getHumanMove(out o_EndGameMessage);
-        //    }
-
-        //    if (currentMove != null)
-        //    {
-        //        MakeMove(currentMove, m_GameBoard.GetPieceInCellByPosition(currentMove.From), out o_EndGameMessage);
-        //    }
-
-        //    return currentMove;
-        //}
-
-
-
 
         public Move PlayTurn(Point i_From, Point i_To, out string o_EndGameMessage)
         {
@@ -259,69 +222,23 @@ namespace Ex05.GameLogic
             return currentMove;
         }
 
-
-
         private Move getComputerMove()
         {
             Move computerMove = new Move();
-            int randomIndextMove;
+            int randomIndexMove;
 
             if (m_PlayerEatingMoves.Count != 0)
             {
-                randomIndextMove = s_Rand.Next(m_PlayerEatingMoves.Count);
-                computerMove = m_PlayerEatingMoves[randomIndextMove];
+                randomIndexMove = s_Rand.Next(m_PlayerEatingMoves.Count);
+                computerMove = m_PlayerEatingMoves[randomIndexMove];
             }
             else if (m_PlayerRegularMoves.Count != 0)
             {
-                randomIndextMove = s_Rand.Next(m_PlayerRegularMoves.Count);
-                computerMove = m_PlayerRegularMoves[randomIndextMove];
+                randomIndexMove = s_Rand.Next(m_PlayerRegularMoves.Count);
+                computerMove = m_PlayerRegularMoves[randomIndexMove];
             }
 
             return computerMove;
-        }
-
-        private Move getHumanMove(out string o_EndGameMessage)
-        {
-            Move currentMove = new Move();
-            bool isQuit = false;
-            o_EndGameMessage = string.Empty;
-
-            while (true)
-            {
-                string moveString = UserInterface.GetMoveStringFromUser(m_CurrentPlayer);
-                if (moveString == "Q")
-                {
-                    currentMove = null;
-                    isQuit = true;
-                    switchTurnsBetweenPlayers();
-                    checkEndGame(out o_EndGameMessage, isQuit);
-                    break;
-                }
-
-                if (!InputValidator.IsMoveStringValid(moveString))
-                {
-                    UserInterface.PrintInvalidMoveStringMessage();
-                    continue;
-                }
-
-                currentMove = new Move(moveString);
-                Piece movingPiece = m_GameBoard.GetPieceInCellByPosition(currentMove.From);
-                if (movingPiece == null || movingPiece.IsOpponentPiece(m_CurrentPlayer.PlayerPieceType))
-                {
-                    UserInterface.PrintInvalidMoveMessage();
-                    continue;
-                }
-
-                currentMove = getMoveFromLists(currentMove);
-                if (!isLegalMove(currentMove))
-                {
-                    continue;
-                }
-
-                break;
-            }
-
-            return currentMove;
         }
 
         public void MakeMove(Move io_MoveToPlay, Piece io_PieceToMove, out string o_EndGameMessage)
@@ -340,7 +257,6 @@ namespace Ex05.GameLogic
             }
             CurrentPlayer.MustEatAgain = false;
             prepareForNextTurn();
-            
         }
 
         private void prepareForExtraTurn(Piece i_movingPiece, Move i_Move)
@@ -367,7 +283,7 @@ namespace Ex05.GameLogic
             if (!m_CurrentPlayer.IsPlayerHasMoves(m_GameBoard) && !m_NextPlayer.IsPlayerHasMoves(m_GameBoard))
             {
                 m_Status = eGameStatusOptions.Draw;
-                endGameMessage = "It's a draw!";
+                endGameMessage = "Tie!\n Another Round?";
             }
 
             else if (m_NextPlayer.PlayerPieces.Count == 0 || !m_NextPlayer.IsPlayerHasMoves(m_GameBoard) || i_isQuit)
@@ -375,7 +291,8 @@ namespace Ex05.GameLogic
                 m_Status = eGameStatusOptions.Win;
                 winnerPoints = calculateWinnerPoints();
                 m_CurrentPlayer.Points += winnerPoints;
-                endGameMessage = (string.Format("{0} Won and got {1} more points! {2} have {3} points now.", m_CurrentPlayer.PlayerName, winnerPoints, m_CurrentPlayer.PlayerName, m_CurrentPlayer.Points));
+                OnScoreAdded(m_CurrentPlayer.Points, CurrentPlayer.PlayerName);
+                endGameMessage = (string.Format("{0} Won\n Another Round?", m_CurrentPlayer.PlayerName, winnerPoints, m_CurrentPlayer.PlayerName, m_CurrentPlayer.Points));
             }
 
             o_EndGameMessage = endGameMessage;

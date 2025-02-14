@@ -81,8 +81,8 @@
             this.MinimizeBox = false;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "FormCheckersGame";
-            this.Text = "FormCheckersGame";
+            this.Name = "Damka";
+            this.Text = "Damka";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
